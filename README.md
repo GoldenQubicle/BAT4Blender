@@ -18,7 +18,7 @@ The current project structure is not well suited yet to accommodate this.
 However the general gist of it is as follows.
 1. download `__init__.py` and `BAT4Blender.py`
 2. put the two in a folder, and zip said folder.
-3. open Blender and go to 'Edit' -> 'Preferences' -> 'Install..' 
+3. open Blender and go to 'Edit' -> 'Preferences' -> 'Add-ons' -> 'Install..' 
 4. navigate to the zip file created in step 2 
 5. select 'Install Add-on from File..' 
 6. the Add-on is now installed and available in the output context menu. 
