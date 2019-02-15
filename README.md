@@ -22,10 +22,11 @@ However the general gist of it is as follows.
 4. navigate to the zip file created in step 2 
 5. select 'Install Add-on from File..' 
 6. the Add-on is now installed and available in the output context menu. 
-7. disable / enable the Add-on to delete sun and camera objects
 
 Notes
 - the render path is currently not set and consequently rendering the camera views will fail. 
+- no checks yet to see if sun / cameras are already present
+  - i.e. hitting the buttons more than once will result in multiple objects added to scene 
 - disabling / enabling the Add-on only reloads code from `__init__.py` 
   - i.e. changes made to `BAT4Blender.py` will only take effect after a full restart of Blender. 
 
