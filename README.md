@@ -13,7 +13,7 @@
 Notes
 - in Blender print output is send to system console, not to the python console. Go to 'Window' -> 'Toggle System Console' to open it.  
 
-## Installing the add-on
+## Installing the Add-on
 The current project structure is not well suited yet to accomodate this.
 However the general gist of it is as follows.
 1. download `__init__.py` and `BAT4Blender.py`
