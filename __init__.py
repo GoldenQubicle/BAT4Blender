@@ -63,7 +63,7 @@ class GUI_Button_Render(bpy.types.Operator):
             context.scene.render.image_settings.file_format = "PNG"
             context.scene.render.image_settings.color_mode = "RGBA"
             context.scene.render.image_settings.color_depth = "16"
-            # get path relative to blend file. 
+            # TODO get path relative to blend file. 
             context.scene.render.filepath = '{0}{1}{2}'.format("FOLDER_PATH", cam_name, ".png" )
             # bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)  # invoke brings up render preview, however, buggy in loop. . ?
             bpy.ops.render.render(write_still=True)
