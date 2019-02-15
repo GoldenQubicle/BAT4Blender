@@ -57,14 +57,15 @@ class GUI_Button_Render(bpy.types.Operator):
             context.scene.camera = bpy.data.objects[cam_name]
             context.scene.render.engine = "BLENDER_EEVEE"  # CYCLES
             context.scene.render.alpha_mode = 'TRANSPARENT'
-            context.scene.render.resolution_x = 256
+            # rendering at 256px for all cameras . . 
+            context.scene.render.resolution_x = 256 
             context.scene.render.resolution_y = 256
             context.scene.render.image_settings.file_format = "PNG"
             context.scene.render.image_settings.color_mode = "RGBA"
             context.scene.render.image_settings.color_depth = "16"
             # get path relative to blend file. 
             context.scene.render.filepath = '{0}{1}{2}'.format("FOLDER_PATH", cam_name, ".png" )
-            # bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)  # invoke brings up preview window, however, buggy in loop. . ?
+            # bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)  # invoke brings up render preview, however, buggy in loop. . ?
             bpy.ops.render.render(write_still=True)
 
         return {"FINISHED"}
@@ -92,7 +93,7 @@ class GUI_Button_Cameras(bpy.types.Operator):
     bl_description = "Add Camera Rig"
 
     def invoke(self, context, event):
-        # ditto 4 cameras are plenty, check if cameras exists beforehand..
+        # ditto check if cameras exists beforehand.. 4 are sufficient
         for i in range(0, 4):
             cam_name = '{0}{1}'.format('cam_z', i+1)
             cam = bpy.data.cameras.new(cam_name)
