@@ -11,8 +11,7 @@
 7. That's it :) 
 
 Notes
-- in Blender print output is send to system console, not to the python console.
-- open the system console in Blender go to 'Window' -> 'Toggle System Console' 
+- in Blender print output is send to system console, not to the python console. Go to 'Window' -> 'Toggle System Console' to open it.  
 
 ## Installing the add-on
 The current project structure is not well suited yet to accomodate this.
@@ -28,7 +27,7 @@ However the general gist of it is as follows.
 Notes
 - the render path is currently not set and consequently rendering the camera views will fail. 
 - disabling / enabling the Add-on only reloads code from `__init__.py` 
-  - changes made to `BAT4Blender.py` will only take effect after a full restart of Blender. 
+  - i.e. changes made to `BAT4Blender.py` will only take effect after a full restart of Blender. 
 
 
 
