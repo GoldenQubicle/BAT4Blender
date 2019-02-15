@@ -3,7 +3,7 @@
 ## Running external scripts in Blender
 1. download (or copy contents of) link_script.txt 
 2. open Blender and switch to scripting layout
-3. open the link_script.txt file (or paste the contents)
+3. open the link_script.txt file in the text editor (or paste the contents in a new file)
 4. change the strings in the filename to point towards a python script (the experimental.py file is a minimal example)
 `filename = os.path.join("DRIVE:/folder/path", "scriptfile.py")`
 5. in Blender hit the key combo alt+p to run the script
