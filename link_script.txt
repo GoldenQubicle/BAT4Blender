@@ -1,0 +1,5 @@
+import bpy
+import os
+
+filename = os.path.join("C:/Users/Erik/IdeaProjects/BAT4Blender", "BAT4Blender.py")
+exec(compile(open(filename).read(), filename, 'exec'))
