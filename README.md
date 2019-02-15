@@ -10,8 +10,9 @@
 6. use an IDE / text editor of choice to edit pythons files, save, and re-run the link script in Blender
 7. That's it :) 
 
-Note: in Blender print output is send to system console, not to the python console.
-To open the system console in Blender go to 'Window' -> 'Toggle System Console' 
+Notes
+- in Blender print output is send to system console, not to the python console.
+- open the system console in Blender go to 'Window' -> 'Toggle System Console' 
 
 ## Installing the add-on
 The current project structure is not well suited yet to accomodate this.
@@ -24,8 +25,10 @@ However the general gist of it is as follows.
 6. the Add-on is now installed and available in the output context menu. 
 7. disable / enable the Add-on to delete sun and camera objects
 
-Note: the render path is currently not set. In addition, disabling / enabling the Add-on only reloads code from `__init__.py` 
-Put another way, changes made to `BAT4Blender.py` will only take effect after a full restart of Blender. 
+Notes
+- the render path is currently not set and consequently rendering the camera views will fail. 
+- disabling / enabling the Add-on only reloads code from `__init__.py` 
+  - changes made to `BAT4Blender.py` will only take effect after a full restart of Blender. 
 
 
 
