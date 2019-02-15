@@ -1,5 +1,5 @@
 import bpy
 import os
 
-filename = os.path.join("PATH_TO_FILE", "FILE_TO_RUN.py")
+filename = os.path.join("FOLDER_PATH", "experimental.py")
 exec(compile(open(filename).read(), filename, 'exec'))
