@@ -7,14 +7,14 @@
 4. change the strings in the filename to point towards a python script (the experimental.py file is a minimal example)
 `filename = os.path.join("DRIVE:/folder/path", "scriptfile.py")`
 5. while in the Blender text editor hit the key combo alt+p to run the script
-6. use an IDE / text editor of choice to edit pythons files, save, and re-run the link script in Blender
+6. use an IDE / text editor of choice to edit the python file, save, and re-run the link script in Blender
 7. That's it :) 
 
 Notes
 - in Blender print output is send to system console, not to the python console. Go to 'Window' -> 'Toggle System Console' to open it.  
 
 ## Installing the Add-on
-The current project structure is not well suited yet to accomodate this.
+The current project structure is not well suited yet to accommodate this.
 However the general gist of it is as follows.
 1. download `__init__.py` and `BAT4Blender.py`
 2. put the two in a folder, and zip said folder.
