@@ -54,7 +54,6 @@ class GUI_Button_Render(bpy.types.Operator):
         # add check if camera exists beforehand..
         for i in range(0, 4):
             cam_name = '{0}{1}'.format('cam_z', i + 1)
-
             context.scene.camera = bpy.data.objects[cam_name]
             context.scene.render.engine = "BLENDER_EEVEE"  # CYCLES
             context.scene.render.alpha_mode = 'TRANSPARENT'
@@ -77,6 +76,7 @@ class GUI_Button_Sun(bpy.types.Operator):
     bl_description = "Add sun to scene"
 
     def invoke(self, context, event):
+        # add check if sun exists beforehand.. don't want a thousand burning suns
         sun = bpy.data.lights.new("Sun", "SUN")  # name, type
         sun_ob = bpy.data.objects.new("Sun", sun)
         sun_ob.rotation_mode = "XYZ"
@@ -92,6 +92,7 @@ class GUI_Button_Cameras(bpy.types.Operator):
     bl_description = "Add Camera Rig"
 
     def invoke(self, context, event):
+        # ditto 4 cameras are plenty, check if cameras exists beforehand..
         for i in range(0, 4):
             cam_name = '{0}{1}'.format('cam_z', i+1)
             cam = bpy.data.cameras.new(cam_name)
