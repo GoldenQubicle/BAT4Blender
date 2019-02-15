@@ -63,9 +63,9 @@ class GUI_Button_Render(bpy.types.Operator):
             context.scene.render.image_settings.file_format = "PNG"
             context.scene.render.image_settings.color_mode = "RGBA"
             context.scene.render.image_settings.color_depth = "16"
-            context.scene.render.filepath = '{0}{1}{2}'.format("C:\\Users\\Erik\\Documents\\Blender\\", cam_name, ".png" )
-            # bpy.ops.render.render('INVOKE_DEFAULT',
-            #                       write_still=True)  # invoke brings up render window, write_still toggles output
+            # get path relative to blend file. 
+            context.scene.render.filepath = '{0}{1}{2}'.format("FOLDER_PATH", cam_name, ".png" )
+            # bpy.ops.render.render('INVOKE_DEFAULT', write_still=True)  # invoke brings up preview window, however, buggy in loop. . ?
             bpy.ops.render.render(write_still=True)
 
         return {"FINISHED"}
@@ -104,30 +104,3 @@ class GUI_Button_Cameras(bpy.types.Operator):
         return {"FINISHED"}
 
 
-# class GUI_Button_Camera5(bpy.types.Operator):
-#     bl_label = "Camera5"
-#     bl_idname = "object.cam5"
-#     bl_description = "Add camera for zoom 5"
-#
-#     def invoke(self, context, event):
-#         print(Cam.loc_z456)
-#         camz5 = bpy.data.cameras.new("camz5")
-#         camz5_ob = bpy.data.objects.new("camz5", camz5)
-#         camz5_ob.data.type = "ORTHO"
-#         camz5_ob.rotation_mode = "XYZ"
-#         camz5_ob.location = Cam.loc_z456
-#         camz5_ob.rotation_euler[0] = radians(Cam.angles[0])
-#         camz5_ob.rotation_euler[1] = 0.0
-#         camz5_ob.rotation_euler[2] = radians(Cam.angles[4])
-#         # camz5_ob.location[0] = 51.41363
-#         # camz5_ob.location[1] = -124.123474
-#         # camz5_ob.location[2] = 134.35028
-#
-#         # camz5_ob.rotation_euler[0] = 0.785398
-#         # camz5_ob.rotation_euler[1] = 0.0
-#         # camz5_ob.rotation_euler[2] = 0.392699
-#         camz5_ob.data.ortho_scale = 37.0
-#         camz5_ob.data.shift_x = 0.0
-#         camz5_ob.data.shift_y = 0.0
-#         context.scene.collection.objects.link(camz5_ob)
-#         return {"FINISHED"}
