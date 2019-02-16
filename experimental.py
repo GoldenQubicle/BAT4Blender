@@ -1,1 +1,4 @@
-print("this totally works right?!")
+import bpy
+
+for ob in bpy.context.collection.objects:
+	print(ob.name)
