@@ -13,7 +13,7 @@ def get_all_bound_boxes() -> List:
 
 
 def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
-    (min_x, max_x, min_y, max_y, min_z, max_z) = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    (min_x, max_x, min_y, max_y, min_z, max_z) = (b_boxes[0][0][0], b_boxes[0][0][0], b_boxes[0][0][1], b_boxes[0][0][1], b_boxes[0][0][2], b_boxes[0][0][2])
     for b in b_boxes:
         for v in b:
             if v[0] < min_x:
