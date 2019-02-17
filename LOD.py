@@ -67,8 +67,9 @@ def create_lod(xyz_mm: List[Any]):
     bpy.context.collection.objects.link(c)
 
 
-for ob in bpy.data.objects:
+for ob in bpy.context.collection.all_objects:
     if ob.name == "LOD":
+        print("check")
         bpy.data.objects.remove(bpy.context.collection.objects["LOD"], do_unlink=True)
 
 bb = get_all_bound_boxes()
