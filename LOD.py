@@ -1,10 +1,9 @@
 import bpy
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from typing import List, Any
 
 
 def get_all_bound_boxes() -> List:
-    # TODO figure out if splines curves etc have bound boxes
     b_boxes: List[List[Any]] = []
     for ob in bpy.context.collection.all_objects:
         if ob.type == 'MESH':
@@ -14,7 +13,6 @@ def get_all_bound_boxes() -> List:
 
 
 def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
-    # TODO handle error when model is offset from world origin
     (min_x, max_x, min_y, max_y, min_z, max_z) = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     for b in b_boxes:
         for v in b:
@@ -33,11 +31,41 @@ def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
     return [min_x, max_x, min_y, max_y, min_z, max_z]
 
 
+def get_mesh_cube(name):
+    verts = [(1.0, 1.0, -1.0),
+             (1.0, -1.0, -1.0),
+             (-1.0, -1.0, -1.0),
+             (-1.0, 1.0, -1.0),
+             (1.0, 1.0, 1.0),
+             (1.0, -1.0, 1.0),
+             (-1.0, -1.0, 1.0),
+             (-1.0, 1.0, 1.0)]
+    faces = [(0, 1, 2, 3),
+             (4, 7, 6, 5),
+             (0, 4, 5, 1),
+             (1, 5, 6, 2),
+             (2, 6, 7, 3),
+             (4, 0, 3, 7)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, [], faces)
+    return bpy.data.objects.new(name, mesh)
+
+
+def create_lod(xyz_mm: List[Any]):
+    width = xyz_mm[1] - xyz_mm[0]
+    depth = xyz_mm[3] - xyz_mm[2]
+    height = xyz_mm[5] - xyz_mm[4]
+    loc = (xyz_mm[0] + width / 2, xyz_mm[2] + depth / 2, xyz_mm[4] + height / 2)
+
+    c = get_mesh_cube("LOD")
+    c.matrix_world @= Matrix.Translation(loc)
+    c.matrix_world @= Matrix.Scale(width / 2, 4, (1, 0, 0))
+    c.matrix_world @= Matrix.Scale(depth / 2, 4, (0, 1, 0))
+    c.matrix_world @= Matrix.Scale(height / 2, 4, (0, 0, 1))
+
+    bpy.context.collection.objects.link(c)
+
+
 bb = get_all_bound_boxes()
 min_max_xyz = get_min_max_xyz(bb)
-print(min_max_xyz)
-
-
-# start with min / max x,y,z variables at 0 (i.e. world origin)
-# go over all vertices and get the min / max values for x,y,z
-# from this set of 6 values; calculate dimensions and center location
+create_lod(min_max_xyz)
