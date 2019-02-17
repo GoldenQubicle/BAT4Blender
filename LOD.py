@@ -2,6 +2,7 @@ import bpy
 from mathutils import Vector, Matrix
 from typing import List, Any
 
+LOD_NAME = "LOD"
 
 def get_all_bound_boxes() -> List:
     b_boxes: List[List[Any]] = []
@@ -58,7 +59,7 @@ def create_lod(xyz_mm: List[Any]):
     height = xyz_mm[5] - xyz_mm[4]
     loc = (xyz_mm[0] + width / 2, xyz_mm[2] + depth / 2, xyz_mm[4] + height / 2)
 
-    c = get_mesh_cube("LOD")
+    c = get_mesh_cube(LOD_NAME)
     c.matrix_world @= Matrix.Translation(loc)
     c.matrix_world @= Matrix.Scale(width / 2, 4, (1, 0, 0))
     c.matrix_world @= Matrix.Scale(depth / 2, 4, (0, 1, 0))
@@ -68,8 +69,8 @@ def create_lod(xyz_mm: List[Any]):
 
 
 for ob in bpy.context.collection.all_objects:
-    if ob.name == "LOD":
-        bpy.data.objects.remove(bpy.context.collection.objects["LOD"], do_unlink=True)
+    if ob.name == LOD_NAME:
+        bpy.data.objects.remove(bpy.context.collection.objects[LOD_NAME], do_unlink=True)
 
 bb = get_all_bound_boxes()
 min_max_xyz = get_min_max_xyz(bb)
