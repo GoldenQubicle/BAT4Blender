@@ -67,6 +67,10 @@ def create_lod(xyz_mm: List[Any]):
     bpy.context.collection.objects.link(c)
 
 
+for ob in bpy.data.objects:
+    if ob.name == "LOD":
+        bpy.data.objects.remove(bpy.context.collection.objects["LOD"], do_unlink=True)
+
 bb = get_all_bound_boxes()
 min_max_xyz = get_min_max_xyz(bb)
 create_lod(min_max_xyz)
