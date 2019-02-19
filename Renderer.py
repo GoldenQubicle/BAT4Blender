@@ -1,9 +1,28 @@
 import bpy
+from enum import Enum
+from math import radians, sin, cos
 
 CAM_NAME = "cam_654"
-loc_z456 = (51.41363, -124.123474, 134.35028)
-angle_z456 = (0.7853982, 0, 0.3926991)
 
+range = 190
+angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
+angle_rotation = radians(67.5)
+
+
+class Rotation(Enum):
+    NORTH = 1,
+    EAST = 2,
+    SOUTH = 3,
+    WEST = 4
+
+
+class Zoom(Enum):
+    ONE = 1,
+    TWO = 2,
+    THREE = 3,
+    FOUR = 4,
+    FIVE = 5,
+    SIX = 6
 
 # pass an orientation & zoom flag here. . ? and set camera specific for each view -> would need lot of config values
 # better grab the camera object and translate & rotate according to flags..?
@@ -13,12 +32,25 @@ angle_z456 = (0.7853982, 0, 0.3926991)
 # - figure out by checking of lod is in camera view. .?
 # probably will need to do both
 
-def rotate_camera(name, rotation):
-    if bpy.data.objects.get(name) is not None:
-        print("camera exist")
-        # do stuff. .
-    else:
-        print("camera has not been added yet")
+def get_location_and_angle(rotation, zoom):
+    if zoom == Zoom.FOUR or Zoom.FIVE or Zoom.SIX:
+        setup = 3
+    if zoom == Zoom.THREE:
+        setup = 2
+    if zoom == Zoom.TWO:
+        setup = 1
+    if zoom == Zoom.ONE:
+        setup = 0
+
+    x = range * sin(angle_zoom[setup]) * sin(angle_rotation)
+    y = range * sin(angle_zoom[setup]) * cos(angle_rotation)
+    z = range * cos(angle_zoom[setup])
+    
+    loc = (x, y, z)
+    rot = ()
+    print(loc)
+
+
 
 
 def set_camera(location, angles):
@@ -31,12 +63,17 @@ def set_camera(location, angles):
     bpy.context.scene.collection.objects.link(cam_ob)
 
 
-rotate_camera(CAM_NAME)
+def default_render_dimension():
+    # need this otherwise camera view is not square to begin with
+    bpy.context.scene.render.resolution_x = 256
+    bpy.context.scene.render.resolution_y = 256
+
 
 for ob in bpy.data.objects:
     if ob.name == CAM_NAME:
         bpy.data.objects.remove(ob, do_unlink=True)
 
-set_camera(loc_z456, angle_z456)
+config = get_location_and_angle(Rotation.NORTH, Zoom.SIX)
 
-rotate_camera(CAM_NAME)
+# set_camera(config[0], config[1])
+# default_render_dimension()
