@@ -4,6 +4,7 @@ from typing import List, Any
 
 LOD_NAME = "LOD"
 
+
 def get_all_bound_boxes() -> List:
     b_boxes: List[List[Any]] = []
     for ob in bpy.context.collection.all_objects:
@@ -33,7 +34,7 @@ def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
     return [min_x, max_x, min_y, max_y, min_z, max_z]
 
 
-def get_mesh_cube(name):
+def get_mesh_cube(name) -> object:
     verts = [(1.0, 1.0, -1.0),
              (1.0, -1.0, -1.0),
              (-1.0, -1.0, -1.0),
