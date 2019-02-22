@@ -25,12 +25,12 @@ class Zoom(Enum):
     SIX = 3
 
 
-def get_location_and_angle(rotation, zoom):
+def get_location_and_rotation(rotation, zoom):
     x = camera_range * sin(angle_zoom[zoom.value]) * cos(angle_rotation[rotation.value])
     y = camera_range * sin(angle_zoom[zoom.value]) * sin(angle_rotation[rotation.value])
     z = camera_range * cos(angle_zoom[zoom.value])
     loc = (x, y, z)
-    rot = (angle_zoom[zoom.value], 0, angle_rotation[rotation.value] + radians(90))
+    rot = (angle_zoom[zoom.value], 0, angle_rotation[rotation.value] + radians(90))  # need to add 90 for proper camera location in scene. .
     return [loc, rot]
 
 
@@ -55,6 +55,6 @@ for ob in bpy.data.objects:
     if ob.name == CAM_NAME:
         bpy.data.objects.remove(ob, do_unlink=True)
 
-config = get_location_and_angle(Rotation.NORTH, Zoom.SIX)
-set_camera(config[0], config[1])
+(loc, rot) = get_location_and_rotation(Rotation.EAST, Zoom.ONE)
+set_camera(loc, rot)
 default_render_dimension()
