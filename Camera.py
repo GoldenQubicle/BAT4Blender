@@ -55,6 +55,6 @@ for ob in bpy.data.objects:
     if ob.name == CAM_NAME:
         bpy.data.objects.remove(ob, do_unlink=True)
 
-(loc, rot) = get_location_and_rotation(Rotation.EAST, Zoom.ONE)
+(loc, rot) = get_location_and_rotation(Rotation.NORTH, Zoom.FIVE)
 set_camera(loc, rot)
 default_render_dimension()
