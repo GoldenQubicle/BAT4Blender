@@ -2,55 +2,36 @@ import bpy
 from enum import Enum
 from math import radians, sin, cos
 
-CAM_NAME = "cam_654"
-
-range = 190
+CAM_NAME = "cam"
+camera_range = 190
 angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
-angle_rotation = radians(67.5)
+angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]
 
 
 class Rotation(Enum):
-    NORTH = 1,
-    EAST = 2,
-    SOUTH = 3,
-    WEST = 4
+    NORTH = 0
+    WEST = 1
+    SOUTH = 2
+    EAST = 3
 
 
+# not too sure about this. . i.e. same value for zoom 4,5,6..
 class Zoom(Enum):
-    ONE = 1,
-    TWO = 2,
-    THREE = 3,
-    FOUR = 4,
-    FIVE = 5,
-    SIX = 6
+    ONE = 0
+    TWO = 1
+    THREE = 2
+    FOUR = 3
+    FIVE = 3
+    SIX = 3
 
-# pass an orientation & zoom flag here. . ? and set camera specific for each view -> would need lot of config values
-# better grab the camera object and translate & rotate according to flags..?
-
-# q: how to figure out the correct scale . .
-# - figure out by lod dimension. .?
-# - figure out by checking of lod is in camera view. .?
-# probably will need to do both
 
 def get_location_and_angle(rotation, zoom):
-    if zoom == Zoom.FOUR or Zoom.FIVE or Zoom.SIX:
-        setup = 3
-    if zoom == Zoom.THREE:
-        setup = 2
-    if zoom == Zoom.TWO:
-        setup = 1
-    if zoom == Zoom.ONE:
-        setup = 0
-
-    x = range * sin(angle_zoom[setup]) * sin(angle_rotation)
-    y = range * sin(angle_zoom[setup]) * cos(angle_rotation)
-    z = range * cos(angle_zoom[setup])
-    
+    x = camera_range * sin(angle_zoom[zoom.value]) * cos(angle_rotation[rotation.value])
+    y = camera_range * sin(angle_zoom[zoom.value]) * sin(angle_rotation[rotation.value])
+    z = camera_range * cos(angle_zoom[zoom.value])
     loc = (x, y, z)
-    rot = ()
-    print(loc)
-
-
+    rot = (angle_zoom[zoom.value], 0, angle_rotation[rotation.value] + radians(90))
+    return [loc, rot]
 
 
 def set_camera(location, angles):
@@ -73,7 +54,6 @@ for ob in bpy.data.objects:
     if ob.name == CAM_NAME:
         bpy.data.objects.remove(ob, do_unlink=True)
 
-config = get_location_and_angle(Rotation.NORTH, Zoom.SIX)
-
-# set_camera(config[0], config[1])
-# default_render_dimension()
+config = get_location_and_angle(Rotation.NORTH, Zoom.ONE)
+set_camera(config[0], config[1])
+default_render_dimension()
