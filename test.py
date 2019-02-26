@@ -1,6 +1,5 @@
 import bpy
-
-from .BAT4Blender import Config, test_function
+import BAT4Blender
 
 bl_info = {
     "name": "BAT4Blender",
@@ -74,9 +73,8 @@ class LayoutDemoPanel(bpy.types.Panel):
 def register():
     print("ello")
     bpy.utils.register_class(LayoutDemoPanel)
-    bpy.utils.register_class(Config)
-
-    print(test_function())
+    bpy.utils.register_class(BAT4Blender.Config)
+    print(BAT4Blender.Config.class_test_function())
     # bpy.utils.register_class(GUI_Button_Sun)
     # bpy.utils.register_class(GUI_Button_Render)
     # bpy.utils.register_class(GUI_Button_Cameras)
@@ -88,7 +86,7 @@ def unregister():
     #         #  need to check for actual sun lights. . otherwise all scene lighting will be removed
     #         bpy.data.objects.remove(obj)
     print("goodbye")
-    bpy.utils.unregister_class(Config)
+    bpy.utils.unregister_class(BAT4Blender)
     bpy.utils.unregister_class(LayoutDemoPanel)
     # bpy.utils.unregister_class(GUI_Button_Sun)
     # bpy.utils.unregister_class(GUI_Button_Render)

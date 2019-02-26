@@ -5,8 +5,12 @@ from typing import List, Any
 LOD_NAME = "LOD"
 
 
+def test():
+    print(" 1 2 3")
+
+
 def get_all_bound_boxes() -> List:
-    b_boxes: List[List[Any]] = []
+    b_boxes = []
     for ob in bpy.context.collection.all_objects:
         if ob.type == 'MESH':
             bbox_corners = [ob.matrix_world @ Vector(corner) for corner in ob.bound_box]
@@ -35,6 +39,7 @@ def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
 
 
 def get_mesh_cube(name) -> object:
+    print("ello from LOD")
     verts = [(1.0, 1.0, -1.0),
              (1.0, -1.0, -1.0),
              (-1.0, -1.0, -1.0),

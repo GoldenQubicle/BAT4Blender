@@ -1,6 +1,10 @@
 import bpy
 
 
+def test_function():
+    print("ello tehre")
+
+
 class Config(bpy.types.Operator):
     bl_idname = 'empty.class'
     bl_label = 'Empty Class'
@@ -15,7 +19,7 @@ class Config(bpy.types.Operator):
     loc_z2 = (59.560425, -143.79158, 108.97952)
     loc_z1 = (62.968586, -152.01959, 94.99999)
     cam_location = (loc_z1, loc_z2, loc_z3, loc_z456)
-    
+
     # angle in radians
     rot_z456 = (0.7853982, 0, 0.3926991)
     rot_z3 = (0.87266463, 0, 0.3926991)
