@@ -1,5 +1,0 @@
-import bpy
-import os
-
-filename = os.path.join("CHANGE_THIS_TO_FOLDER_PATH", "experimental.py")
-exec(compile(open(filename).read(), filename, 'exec'))
