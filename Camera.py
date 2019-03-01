@@ -41,7 +41,7 @@ def set_camera(location, angles):
     cam_ob.rotation_mode = "XYZ"
     cam_ob.location = location
     cam_ob.rotation_euler = angles
-    bpy.context.scene.collection.objects.link(cam_ob)
+    bpy.context.scene.objects.link(cam_ob)
 
 
 def default_render_dimension():
@@ -52,8 +52,8 @@ def default_render_dimension():
 
 
 for ob in bpy.data.objects:
-    if ob.name == CAM_NAME:
-        bpy.data.objects.remove(ob, do_unlink=True)
+    if ob.type == 'CAMERA' and ob.name == CAM_NAME:
+        bpy.data.cameras.remove(ob.data, do_unlink=True)
 
 (loc, rot) = get_location_and_rotation(Rotation.NORTH, Zoom.FIVE)
 set_camera(loc, rot)

@@ -1,13 +1,4 @@
 import bpy
-import BAT4Blender
-
-bl_info = {
-    "name": "BAT4Blender",
-    "category": "Render",
-    "blender": (2, 79, 0),
-    "author": "vrtxt",
-    "version": (0, 0, 1),
-}
 
 
 class LayoutDemoPanel(bpy.types.Panel):
@@ -68,30 +59,3 @@ class LayoutDemoPanel(bpy.types.Panel):
         sub.operator("render.render")
 
         row.operator("render.render")
-
-
-def register():
-    print("ello")
-    bpy.utils.register_class(LayoutDemoPanel)
-    bpy.utils.register_class(BAT4Blender.Config)
-    print(BAT4Blender.Config.class_test_function())
-    # bpy.utils.register_class(GUI_Button_Sun)
-    # bpy.utils.register_class(GUI_Button_Render)
-    # bpy.utils.register_class(GUI_Button_Cameras)
-
-
-def unregister():
-    # for obj in bpy.context.scene.objects:
-    #     if obj.type == "LIGHT" or obj.type == "CAMERA":
-    #         #  need to check for actual sun lights. . otherwise all scene lighting will be removed
-    #         bpy.data.objects.remove(obj)
-    print("goodbye")
-    bpy.utils.unregister_class(BAT4Blender)
-    bpy.utils.unregister_class(LayoutDemoPanel)
-    # bpy.utils.unregister_class(GUI_Button_Sun)
-    # bpy.utils.unregister_class(GUI_Button_Render)
-    # bpy.utils.unregister_class(GUI_Button_Cameras)
-
-#
-# if __name__ == "__main__":
-#     register()

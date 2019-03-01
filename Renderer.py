@@ -1,4 +1,5 @@
-import bpy, bpy_extras
+import bpy
+import bpy_extras
 from math import tan, atan
 from mathutils import Vector
 
@@ -34,7 +35,8 @@ os_lod = cam.camera_fit_coords(depsgraph, co_list)[1]
 unit = 16
 targetWidth2 = unit + 8  # unit cube with render slop applied as specified in gmax script
 renderFov = 2 * (atan(targetWidth2 / 190.0))
-os_gmax = (cam.location[2] + unit / 2) * tan(renderFov)  # assuming the gmax camera focus in on lod center height which seems correct
+os_gmax = (cam.location[2] + unit / 2) * tan(
+    renderFov)  # assuming the gmax camera focus in on lod center height which seems correct
 
 print("actual ortho scale")
 print(os_lod)

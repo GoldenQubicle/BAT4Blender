@@ -5,15 +5,11 @@ from typing import List, Any
 LOD_NAME = "LOD"
 
 
-def test():
-    print(" 1 2 3")
-
-
 def get_all_bound_boxes() -> List:
     b_boxes = []
-    for ob in bpy.context.collection.all_objects:
-        if ob.type == 'MESH':
-            bbox_corners = [ob.matrix_world @ Vector(corner) for corner in ob.bound_box]
+    for obj in bpy.context.scene.objects:
+        if obj.type == 'MESH':
+            bbox_corners = [obj.matrix_world * Vector(corner) for corner in obj.bound_box]
             b_boxes.append(bbox_corners)
     return b_boxes
 
@@ -39,7 +35,6 @@ def get_min_max_xyz(b_boxes: List[List[Any]]) -> List[Any]:
 
 
 def get_mesh_cube(name) -> object:
-    print("ello from LOD")
     verts = [(1.0, 1.0, -1.0),
              (1.0, -1.0, -1.0),
              (-1.0, -1.0, -1.0),
@@ -66,17 +61,18 @@ def create_lod(xyz_mm: List[Any]):
     loc = (xyz_mm[0] + width / 2, xyz_mm[2] + depth / 2, xyz_mm[4] + height / 2)
 
     c = get_mesh_cube(LOD_NAME)
-    c.matrix_world @= Matrix.Translation(loc)
-    c.matrix_world @= Matrix.Scale(width / 2, 4, (1, 0, 0))
-    c.matrix_world @= Matrix.Scale(depth / 2, 4, (0, 1, 0))
-    c.matrix_world @= Matrix.Scale(height / 2, 4, (0, 0, 1))
+    c.matrix_world *= Matrix.Translation(loc)
+    c.matrix_world *= Matrix.Scale(width / 2, 4, (1, 0, 0))
+    c.matrix_world *= Matrix.Scale(depth / 2, 4, (0, 1, 0))
+    c.matrix_world *= Matrix.Scale(height / 2, 4, (0, 0, 1))
 
-    bpy.context.collection.objects.link(c)
+    bpy.context.scene.objects.link(c)
 
 
-for ob in bpy.context.collection.all_objects:
+for ob in bpy.context.scene.objects:
     if ob.name == LOD_NAME:
-        bpy.data.objects.remove(bpy.context.collection.objects[LOD_NAME], do_unlink=True)
+        bpy.data.meshes.remove(ob.data)
+        bpy.data.objects.remove(ob, do_unlink=True)
 
 bb = get_all_bound_boxes()
 min_max_xyz = get_min_max_xyz(bb)
