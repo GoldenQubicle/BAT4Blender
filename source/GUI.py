@@ -59,3 +59,12 @@ class LayoutDemoPanel(bpy.types.Panel):
         sub.operator("render.render")
 
         row.operator("render.render")
+
+
+# debug
+def register():
+    bpy.utils.register_class(LayoutDemoPanel)
+
+
+if __name__ == "__main__":
+    register()
