@@ -1,6 +1,7 @@
 import bpy
 from enum import Enum
 from math import radians, sin, cos
+from .Enums import Zoom, Rotation
 
 CAM_NAME = "cam"
 camera_range = 190
@@ -8,29 +9,16 @@ angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
 angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]
 
 
-class Rotation(Enum):
-    NORTH = 0
-    WEST = 1
-    SOUTH = 2
-    EAST = 3
-
-
-#  not quite sure here with having same value for zoom 4,5,6
-class Zoom(Enum):
-    ONE = 0
-    TWO = 1
-    THREE = 2
-    FOUR = 3
-    FIVE = 3
-    SIX = 3
-
-
 def get_location_and_rotation(rotation, zoom):
-    x = camera_range * sin(angle_zoom[zoom.value]) * cos(angle_rotation[rotation.value])
-    y = camera_range * sin(angle_zoom[zoom.value]) * sin(angle_rotation[rotation.value])
-    z = camera_range * cos(angle_zoom[zoom.value])
+    level = zoom.value
+    if zoom == Zoom.FIVE or Zoom.SIX:  # zoom 4, 5 & 6 all use the same camera angle
+        level = 3
+    x = camera_range * sin(angle_zoom[level]) * cos(angle_rotation[rotation.value])
+    y = camera_range * sin(angle_zoom[level]) * sin(angle_rotation[rotation.value])
+    z = camera_range * cos(angle_zoom[level])
     loc = (x, y, z)
-    rot = (angle_zoom[zoom.value], 0, angle_rotation[rotation.value] + radians(90))  # need to add 90 for proper camera location in scene. .
+    rot = (angle_zoom[level], 0,
+           angle_rotation[rotation.value] + radians(90))  # need to add 90 for proper camera location in scene. .
     return [loc, rot]
 
 
@@ -51,10 +39,13 @@ def default_render_dimension():
     bpy.context.scene.render.resolution_y = 256
 
 
-for ob in bpy.data.objects:
-    if ob.type == 'CAMERA' and ob.name == CAM_NAME:
-        bpy.data.cameras.remove(ob.data, do_unlink=True)
+def gui_ops_camera(rot):
+    print(Rotation[rot])
+    print("ello. . ?")
+    for ob in bpy.data.objects:
+        if ob.type == 'CAMERA' and ob.name == CAM_NAME:
+            bpy.data.cameras.remove(ob.data, do_unlink=True)
 
-(loc, rot) = get_location_and_rotation(Rotation.NORTH, Zoom.FIVE)
-set_camera(loc, rot)
-default_render_dimension()
+    (location, rotation) = get_location_and_rotation(Rotation[rot], Zoom.FIVE)
+    set_camera(location, rotation)
+    default_render_dimension()
