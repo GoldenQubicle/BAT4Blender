@@ -1,35 +1,49 @@
 import bpy
-
-from .Enums import Rotation
+from .Enums import View, Zoom
 from .Camera import gui_ops_camera
 
 
 class InterfaceVars(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
-    angles = bpy.props.EnumProperty(
+    rotation = bpy.props.EnumProperty(
         items=[
-            (Rotation.NORTH.name, Rotation.NORTH.name, 'North view', '', Rotation.NORTH.value),
-            ('30', '30', '30', '', 1),
-            ('60', '60', '60', '', 2),
-            ('90', '90', '90', '', 3),
+            (View.NORTH.name, 'N', 'North view', '', View.NORTH.value),
+            (View.EAST.name, 'E', 'East view', '', View.EAST.value),
+            (View.SOUTH.name, 'S', 'South view', '', View.SOUTH.value),
+            (View.WEST.name, 'W', 'West view', '', View.WEST.value)
         ],
-        default=Rotation.NORTH.name
+        default=View.NORTH.name
+    )
+
+    zoom = bpy.props.EnumProperty(
+        items=[
+            (Zoom.ONE.name, '1', 'zoom 1', '', Zoom.ONE.value),
+            (Zoom.TWO.name, '2', 'zoom 2', '', Zoom.TWO.value),
+            (Zoom.THREE.name, '3', 'zoom 3', '', Zoom.THREE.value),
+            (Zoom.FOUR.name, '4', 'zoom 4', '', Zoom.FOUR.value),
+            (Zoom.FIVE.name, '5', 'zoom 5', '', Zoom.FIVE.value),
+            (Zoom.SIX.name, '6', 'zoom 6', '', Zoom.SIX.value)
+        ],
+        default=Zoom.FIVE.name
     )
 
 
-class Rotations(bpy.types.Operator):
-    bl_idname = "object.rotation"
-    bl_label = "Rotate"
+class PreviewOp(bpy.types.Operator):
+    bl_idname = "object.preview"
+    bl_label = "Preview"
 
     def execute(self, context):
-        # rotationvalue = int(context.window_manager.interface_vars.angles)
-        gui_ops_camera(1)
-        print("this does work right?!")
+        v = View[context.window_manager.interface_vars.rotation]
+        z = Zoom[context.window_manager.interface_vars.zoom]
+        gui_ops_camera(v, z)
+        print("sending")
+        print((v,z))
+        return {'FINISHED'}
 
 
-class LayoutDemoPanel(bpy.types.Panel):
+class MainPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
-    bl_label = "Layout Demo"
+    bl_label = "BAT4Blender"
     bl_idname = "SCENE_PT_layout"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -41,10 +55,14 @@ class LayoutDemoPanel(bpy.types.Panel):
         scene = context.scene
 
         # Create a simple row.
-        layout.label(text=" Simple Row:")
-        row = layout.row()
-        row.prop(context.window_manager.interface_vars, 'angles', expand=True)
-        self.layout.operator("object.rotation", text="Rotate")
+        layout.label(text="Rotation:")
+        rot = layout.row()
+        rot.prop(context.window_manager.interface_vars, 'rotation', expand=True)
+        layout.label(text="Zoom:")
+        zoom = layout.row()
+        zoom.prop(context.window_manager.interface_vars, 'zoom', expand=True)
+
+        self.layout.operator("object.preview", text="Preview")
         # the self layout needs to be 'preview', with a single operator defined!
 
         # row = layout.row()
