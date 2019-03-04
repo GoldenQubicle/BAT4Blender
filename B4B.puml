@@ -1,0 +1,53 @@
+@startuml
+
+package BAT4Blender {
+'    package Mill {
+        class Rig {
+        zoom enum
+        rotation enum
+        HD/SD enum
+        ...
+        ---
+        checkRequirements()
+        ..
+        gui_render(zoom, level)
+        gui_add_lod()
+        ...
+        }
+        object LOD
+        object Camera
+        object Sun
+        object Renderer
+
+        Rig -down-> LOD
+        Rig -down-> Camera
+        Rig -down-> Sun
+        Rig -down-> Renderer
+'    }
+
+    Class GUI_Panel {
+        button w selection vars
+        ..
+        button w operators,
+        executes on click
+        ..
+    }
+
+    Class GUI_vars {
+        using B4B enums
+        register w ui manager
+    }
+
+    Class GUI_ops {
+        defines UI operators such as render
+        preview, reset, etc
+        ..
+        passes selected ui vars along
+    }
+
+    GUI_Panel -down-|> GUI_ops
+    GUI_ops -down-|> Rig : calls on
+}
+
+
+@enduml
