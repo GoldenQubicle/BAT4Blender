@@ -1,7 +1,6 @@
 import bpy
 
 from .GUI import MainPanel, InterfaceVars, PreviewOp
-from .Sun import test
 
 bl_info = {
     "name": "BAT4Blender",
@@ -18,7 +17,6 @@ def register():
     bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)
     bpy.utils.register_class(MainPanel)
     bpy.utils.register_class(PreviewOp)
-    test()
 
 
 def unregister():

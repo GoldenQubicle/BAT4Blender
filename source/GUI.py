@@ -1,6 +1,7 @@
 import bpy
 from .Enums import View, Zoom
 from .Camera import gui_ops_camera
+from .Sun import gui_ops_sun
 
 
 class InterfaceVars(bpy.types.PropertyGroup):
@@ -36,12 +37,12 @@ class PreviewOp(bpy.types.Operator):
         v = View[context.window_manager.interface_vars.rotation]
         z = Zoom[context.window_manager.interface_vars.zoom]
         gui_ops_camera(v, z)
-
+        gui_ops_sun(v)
         # call gui_ops_sun
         # call gui_ops_LOD ? or just check if present and add if not
         # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
-        print("sending")
-        print((v,z))
+        # print("sending")
+        # print((v,z))
         return {'FINISHED'}
 
 

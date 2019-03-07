@@ -1,7 +1,7 @@
 @startuml
 
 package BAT4Blender {
-'    package Mill {
+
         class Rig {
         zoom enum
         rotation enum
@@ -23,7 +23,7 @@ package BAT4Blender {
         Rig -down-> Camera
         Rig -down-> Sun
         Rig -down-> Renderer
-'    }
+
 
     Class GUI_Panel {
         button w selection vars
