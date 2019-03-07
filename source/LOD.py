@@ -65,15 +65,16 @@ def create_lod(xyz_mm: List[Any]):
     c.matrix_world *= Matrix.Scale(width / 2, 4, (1, 0, 0))
     c.matrix_world *= Matrix.Scale(depth / 2, 4, (0, 1, 0))
     c.matrix_world *= Matrix.Scale(height / 2, 4, (0, 0, 1))
-
+    
     bpy.context.scene.objects.link(c)
 
 
-for ob in bpy.context.scene.objects:
-    if ob.name == LOD_NAME:
-        bpy.data.meshes.remove(ob.data)
-        bpy.data.objects.remove(ob, do_unlink=True)
+def gui_ops_lod():
+    for ob in bpy.data.objects:
+        if ob.name == LOD_NAME:
+            bpy.data.meshes.remove(ob.data)
+            bpy.data.objects.remove(ob, do_unlink=True)
 
-bb = get_all_bound_boxes()
-min_max_xyz = get_min_max_xyz(bb)
-create_lod(min_max_xyz)
+    bb = get_all_bound_boxes()
+    min_max_xyz = get_min_max_xyz(bb)
+    create_lod(min_max_xyz)
