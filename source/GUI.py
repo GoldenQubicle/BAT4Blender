@@ -3,6 +3,8 @@ from .Enums import View, Zoom
 from .Camera import gui_ops_camera
 from .Sun import gui_ops_sun
 from .LOD import gui_ops_lod
+from .Renderer import gui_ops_render
+
 
 class InterfaceVars(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
@@ -23,7 +25,6 @@ class InterfaceVars(bpy.types.PropertyGroup):
             (Zoom.THREE.name, '3', 'zoom 3', '', Zoom.THREE.value),
             (Zoom.FOUR.name, '4', 'zoom 4', '', Zoom.FOUR.value),
             (Zoom.FIVE.name, '5', 'zoom 5', '', Zoom.FIVE.value),
-            (Zoom.SIX.name, '6', 'zoom 6', '', Zoom.SIX.value)
         ],
         default=Zoom.FIVE.name
     )
@@ -39,6 +40,8 @@ class PreviewOp(bpy.types.Operator):
         gui_ops_camera(v, z)
         gui_ops_sun(v)
         gui_ops_lod()
+        gui_ops_render(z)
+
         # call gui_ops_LOD ? or just check if present and add if not
         # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
         # print("sending")

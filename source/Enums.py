@@ -14,4 +14,3 @@ class Zoom(Enum):
     THREE = 2
     FOUR = 3
     FIVE = 4
-    SIX = 5
