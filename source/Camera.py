@@ -6,10 +6,8 @@ CAM_NAME = "cam"
 camera_range = 190
 angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
 angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]
-render_dimension = [16, 32, 64, 128, 256]
 
 
-#
 # class View(Enum):
 #     NORTH = 0
 #     WEST = 1
@@ -23,7 +21,6 @@ render_dimension = [16, 32, 64, 128, 256]
 #     THREE = 2
 #     FOUR = 3
 #     FIVE = 4
-
 
 
 def get_location_and_rotation(rotation, zoom):
@@ -51,22 +48,17 @@ def set_camera(location, angles):
     cam_ob.data.shift_x = 0.0
     cam_ob.data.shift_y = 0.0
     bpy.context.scene.objects.link(cam_ob)
-
-
-def default_render_dimension(zoom):
-    # need this otherwise camera view is not square to begin with
-    # also probably need to pass in zoom level. .?
-    bpy.context.scene.render.resolution_x = render_dimension[zoom.value]
-    bpy.context.scene.render.resolution_y = render_dimension[zoom.value]
+    bpy.context.scene.update()
 
 
 def gui_ops_camera(rotation, zoom):
+    # if CAM_NAME not in bpy.data.objects:
     for ob in bpy.data.objects:
         if ob.type == 'CAMERA' and ob.name == CAM_NAME:
             bpy.data.cameras.remove(ob.data, do_unlink=True)
     (location, rotation) = get_location_and_rotation(rotation, zoom)
     set_camera(location, rotation)
-    default_render_dimension(zoom)
+
 
 # debug
-# gui_ops_camera(View.SOUTH, Zoom.TWO)
+# gui_ops_camera(View.NORTH, Zoom.FIVE)

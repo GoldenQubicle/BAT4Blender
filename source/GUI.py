@@ -30,6 +30,21 @@ class InterfaceVars(bpy.types.PropertyGroup):
     )
 
 
+class RenderOpB4B(bpy.types.Operator):
+    bl_idname = "object.renderb4b"
+    bl_label = "Render all views & rotations"
+
+    def execute(self, context):
+        for z in Zoom:
+            for v in View:
+                print((z,v))
+                gui_ops_camera(v, z)
+                gui_ops_sun(v)
+                gui_ops_lod()
+                gui_ops_render(z, v, True)
+        return {"FINISHED"}
+
+
 class PreviewOp(bpy.types.Operator):
     bl_idname = "object.preview"
     bl_label = "Preview"
@@ -40,7 +55,7 @@ class PreviewOp(bpy.types.Operator):
         gui_ops_camera(v, z)
         gui_ops_sun(v)
         gui_ops_lod()
-        gui_ops_render(z)
+        gui_ops_render(z,v, False)
 
         # call gui_ops_LOD ? or just check if present and add if not
         # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
@@ -73,6 +88,7 @@ class MainPanel(bpy.types.Panel):
         self.layout.operator("object.preview", text="Preview")
         # the self layout needs to be 'preview', with a single operator defined!
 
+        self.layout.operator("object.renderb4b", text="Render")
         # row = layout.row()
         # row.prop(scene, "frame_start")
         # row.prop(scene, "frame_end")

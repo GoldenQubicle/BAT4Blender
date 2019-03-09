@@ -1,28 +1,30 @@
+import os
 import bpy
 import bpy_extras
 from math import tan, atan
 from mathutils import Vector
-# from .LOD import LOD_NAME
-# from .Camera import CAM_NAME
+from .LOD import LOD_NAME
+from .Camera import CAM_NAME
 from enum import Enum
 
 # render dimensions need to take view into account
 # sd default
 render_dimension = [16, 32, 64, 128, 256]
+#
+# LOD_NAME = "LOD"
+# CAM_NAME = "cam"
+# #
+# #
+# class Zoom(Enum):
+#     ONE = 0
+#     TWO = 1
+#     THREE = 2
+#     FOUR = 3
+#     FIVE = 4
 
-LOD_NAME = "LOD"
-CAM_NAME = "cam"
 
+def gui_ops_render(zoom, rotation, sequence):
 
-class Zoom(Enum):
-    ONE = 0
-    TWO = 1
-    THREE = 2
-    FOUR = 3
-    FIVE = 4
-
-
-def gui_ops_render(zoom):
     lod = bpy.data.objects[LOD_NAME]
     cam = bpy.data.objects[CAM_NAME]
     depsgraph = bpy.context.scene.depsgraph
@@ -35,9 +37,6 @@ def gui_ops_render(zoom):
     dim = render_dimension[zoom.value] * s_f
     cam.data.ortho_scale = os_cam
 
-    offset_camera(cam, lod, dim)
-    # lod.hide_render = True
-    bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
     # print("actual ortho scale")
     # print(os_lod)
     # print("gmax ortho scale")
@@ -46,14 +45,32 @@ def gui_ops_render(zoom):
     # print(s_f)
     # print("camera os")
     # print(os_cam)
-    print("output dim")
-    print(dim)
+    # print("output dim")
+    # print(dim)
+
+    offset_camera(cam, lod, dim)
+
+    if sequence:
+        # apparently invoke default also checks if the scene has a camera..?
+        bpy.context.scene.camera = cam
+        fp = bpy.data.filepath
+        dir = os.path.dirname(fp)
+        filename = os.path.join(dir, "B4B_{}_{}.png".format(zoom.name, rotation.name))
+        print(filename)
+        bpy.context.scene.render.filepath = filename
+        bpy.context.scene.render.image_settings.file_format = 'PNG'
+        bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+        bpy.ops.render.render(write_still=True)
+    else:
+        bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
 
 
 def offset_camera(cam, lod, dim):
     # since the renders can be rectangular assing to x, y
     dim_x = dim
     dim_y = dim
+    cam.data.shift_x = 0.0
+    cam.data.shift_y = 0.0
     # get the 2d camera view coordinates for the LOD... is this a correct assumption?
     coordinates = [lod.matrix_world * Vector(corner) for corner in lod.bound_box]
     coords_2d = [bpy_extras.object_utils.world_to_camera_view(bpy.context.scene, cam, coord) for coord in coordinates]
@@ -62,6 +79,7 @@ def offset_camera(cam, lod, dim):
     # map their 0..1 range to pixels to determine how far theLOD is from the left and top edges
     c_x = []
     c_y = []
+
     for c in coords_2d:
         c_x.append(c[0])
         c_y.append(c[1])
@@ -88,7 +106,6 @@ def offset_camera(cam, lod, dim):
     # if so the corresponding render dimension needs to be halved, and then reposition camera again
     bpy.context.scene.render.resolution_x = dim_x
     bpy.context.scene.render.resolution_y = dim_y
-
 
 
 def get_scale_factor(os_lod, os_gmax):
@@ -130,9 +147,9 @@ def translate(value, left_min, left_max, right_min, right_max):
     # Convert the 0-1 range into a value in the right range.
     return right_min + (value_scaled * right_span)
 
-bpy.data.objects[CAM_NAME].data.shift_x = 0.0
-bpy.data.objects[CAM_NAME].data.shift_y = 0.0
-gui_ops_render(Zoom.THREE)
+
+
+# gui_ops_render(Zoom.TWO)
 
 # # if the orthographic scale for the LOD is bigger than gmax derived value (which only uses LOD width)
 # # we know the object does not fit into camera view, either depth or height wise

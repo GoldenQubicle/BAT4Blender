@@ -65,7 +65,9 @@ def create_lod(xyz_mm: List[Any]):
     c.matrix_world *= Matrix.Scale(width / 2, 4, (1, 0, 0))
     c.matrix_world *= Matrix.Scale(depth / 2, 4, (0, 1, 0))
     c.matrix_world *= Matrix.Scale(height / 2, 4, (0, 0, 1))
+    c.hide_render = True
     bpy.context.scene.objects.link(c)
+    bpy.context.scene.update()
 
 
 def gui_ops_lod():
@@ -77,3 +79,6 @@ def gui_ops_lod():
     bb = get_all_bound_boxes()
     min_max_xyz = get_min_max_xyz(bb)
     create_lod(min_max_xyz)
+
+
+# gui_ops_lod()
