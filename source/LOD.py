@@ -81,4 +81,9 @@ def gui_ops_lod():
     create_lod(min_max_xyz)
 
 
+def gui_ops_lod_export():
+    # first want to perform a fitting . ? or this may not be desirable if user has made custom LOD..
+
+    print("export lod")
+
 # gui_ops_lod()

@@ -1,6 +1,6 @@
 import bpy
 
-from .GUI import MainPanel, InterfaceVars, PreviewOp, RenderOpB4B
+from .GUI import *
 
 bl_info = {
     "name": "BAT4Blender",
@@ -16,13 +16,24 @@ def register():
     bpy.utils.register_class(InterfaceVars)
     bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)
     bpy.utils.register_class(MainPanel)
-    bpy.utils.register_class(PreviewOp)
-    bpy.utils.register_class(RenderOpB4B)
+    bpy.utils.register_class(B4BPreview)
+    bpy.utils.register_class(B4BRender)
+    bpy.utils.register_class(B4BLODExport)
+    bpy.utils.register_class(B4BLODAdd)
+    bpy.utils.register_class(B4BLODDelete)
+    bpy.utils.register_class(B4BSunAdd)
+    bpy.utils.register_class(B4BSunDelete)
 
 
 def unregister():
     bpy.utils.unregister_class(InterfaceVars)
     del bpy.types.WindowManager.interface_vars
     bpy.utils.unregister_class(MainPanel)
-    bpy.utils.unregister_class(PreviewOp)
-    bpy.utils.unregister_class(RenderOpB4B)
+    bpy.utils.unregister_class(B4BPreview)
+    bpy.utils.unregister_class(B4BRender)
+    bpy.utils.unregister_class(B4BLODExport)
+    bpy.utils.unregister_class(B4BLODAdd)
+    bpy.utils.unregister_class(B4BLODDelete)
+    bpy.utils.unregister_class(B4BSunAdd)
+    bpy.utils.unregister_class(B4BSunDelete)
+

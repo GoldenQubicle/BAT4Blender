@@ -1,8 +1,8 @@
 import bpy
-from .Enums import View, Zoom
+from .Enums import View, Zoom, Operators
 from .Camera import gui_ops_camera
 from .Sun import gui_ops_sun
-from .LOD import gui_ops_lod
+from .LOD import gui_ops_lod, gui_ops_lod_export
 from .Renderer import gui_ops_render
 
 
@@ -30,8 +30,8 @@ class InterfaceVars(bpy.types.PropertyGroup):
     )
 
 
-class RenderOpB4B(bpy.types.Operator):
-    bl_idname = "object.renderb4b"
+class B4BRender(bpy.types.Operator):
+    bl_idname = Operators.RENDER.value[0]
     bl_label = "Render all views & rotations"
 
     def execute(self, context):
@@ -45,8 +45,8 @@ class RenderOpB4B(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class PreviewOp(bpy.types.Operator):
-    bl_idname = "object.preview"
+class B4BPreview(bpy.types.Operator):
+    bl_idname = Operators.PREVIEW.value[0]
     bl_label = "Preview"
 
     def execute(self, context):
@@ -55,12 +55,57 @@ class PreviewOp(bpy.types.Operator):
         gui_ops_camera(v, z)
         gui_ops_sun(v)
         gui_ops_lod()
-        gui_ops_render(z,v, False)
+        gui_ops_render(z, v, False)
 
         # call gui_ops_LOD ? or just check if present and add if not
         # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
         # print("sending")
         # print((v,z))
+        return {'FINISHED'}
+
+
+class B4BLODExport(bpy.types.Operator):
+    bl_idname = Operators.LOD_EXPORT.value[0]
+    bl_label = "LODExport"
+
+    def execute(self, context):
+        gui_ops_lod_export()
+        return {'FINISHED'}
+
+
+class B4BLODAdd(bpy.types.Operator):
+    bl_idname = Operators.LOD_ADD.value[0]
+    bl_label = "LOD Add"
+
+    def execute(self, context):
+
+        return {'FINISHED'}
+
+
+class B4BLODDelete(bpy.types.Operator):
+    bl_idname = Operators.LOD_DELETE.value[0]
+    bl_label = "LODDelete"
+
+    def execute(self, context):
+
+        return {'FINISHED'}
+
+
+class B4BSunDelete(bpy.types.Operator):
+    bl_idname = Operators.SUN_DELETE.value[0]
+    bl_label = "SunDelete"
+
+    def execute(self, context):
+
+        return {'FINISHED'}
+
+
+class B4BSunAdd(bpy.types.Operator):
+    bl_idname = Operators.SUN_ADD.value[0]
+    bl_label = "SunAdd"
+
+    def execute(self, context):
+
         return {'FINISHED'}
 
 
@@ -74,9 +119,6 @@ class MainPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-
-        scene = context.scene
-
         # Create a simple row.
         layout.label(text="Rotation:")
         rot = layout.row()
@@ -85,62 +127,21 @@ class MainPanel(bpy.types.Panel):
         zoom = layout.row()
         zoom.prop(context.window_manager.interface_vars, 'zoom', expand=True)
 
-        self.layout.operator("object.preview", text="Preview")
-        # the self layout needs to be 'preview', with a single operator defined!
+        self.layout.operator(Operators.PREVIEW.value[0], text="Preview")
 
-        self.layout.operator("object.renderb4b", text="Render")
-        # row = layout.row()
-        # row.prop(scene, "frame_start")
-        # row.prop(scene, "frame_end")
-        #
-        # # Create an row where the buttons are aligned to each other.
-        # layout.label(text=" Aligned Row:")
-        #
-        # row = layout.row(align=True)
-        # row.prop(scene, "frame_start")
-        # row.prop(scene, "frame_end")
-        #
-        # # Create two columns, by using a split layout.
-        # split = layout.split()
-        #
-        # # First column
-        # col = split.column()
-        # col.label(text="Column One:")
-        # col.prop(scene, "frame_end")
-        # col.prop(scene, "frame_start")
-        #
-        # # Second column, aligned
-        # col = split.column(align=True)
-        # col.label(text="Column Two:")
-        # col.prop(scene, "frame_start")
-        # col.prop(scene, "frame_end")
-        #
-        # # Big render button
-        # layout.label(text="Big Button:")
-        # row = layout.row()
-        # row.scale_y = 3.0
-        # row.operator("render.render")
-        #
-        # # Different sizes in a row
-        # layout.label(text="Different button sizes:")
-        # row = layout.row(align=True)
-        # row.operator("render.render")
-        #
-        # sub = row.row()
-        # sub.scale_x = 2.0
-        # sub.operator("render.render")
-        #
-        # row.operator("render.render")
+        layout.label(text="LOD")
+        lod = layout.row(align=True)
+        lod.operator(Operators.LOD_ADD.value[0], text="Add")
+        lod.operator(Operators.LOD_DELETE.value[0], text="Delete")
+        lod.operator(Operators.LOD_EXPORT.value[0], text="Export .3DS")
 
-# debug
-# def register():
-#     bpy.utils.register_class(LayoutDemoPanel)
-#     bpy.utils.register_class(Rotations)
-#     bpy.utils.register_class(InterfaceVars)
-#     bpy.utils.register_class(Zoom)
-#     bpy.utils.register_class(Rotation)
-#     bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)
-#
-#
-# if __name__ == "__main__":
-#     register()
+        layout.label(text="Sun")
+        sun = layout.row(align=True)
+        sun.operator(Operators.SUN_ADD.value[0], text="Add Sun")
+        sun.operator(Operators.SUN_DELETE.value[0], text="Delete Sun")
+
+        layout.label(text="Render")
+        self.layout.operator(Operators.RENDER.value[0], text="Render all zooms & rotations")
+
+
+
