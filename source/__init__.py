@@ -11,7 +11,7 @@ bl_info = {
 }
 
 
-# note: registering is order dependent! e.g. registering layout before vars will throw errors
+# note: registering is order dependent! i.e. registering layout before vars will throw errors
 def register():
     bpy.utils.register_class(InterfaceVars)
     bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)

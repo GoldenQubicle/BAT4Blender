@@ -1,8 +1,7 @@
 import bpy
 from mathutils import Vector, Matrix
 from typing import List, Any
-
-LOD_NAME = "LOD"
+from .Config import LOD_NAME
 
 
 def get_all_bound_boxes() -> List:

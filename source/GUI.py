@@ -1,9 +1,11 @@
 import bpy
+
 from .Enums import View, Zoom, Operators
 from .Camera import gui_ops_camera
 from .Sun import gui_ops_sun
 from .LOD import gui_ops_lod, gui_ops_lod_export
 from .Renderer import gui_ops_render
+from .Rig import *
 
 
 class InterfaceVars(bpy.types.PropertyGroup):
@@ -37,7 +39,7 @@ class B4BRender(bpy.types.Operator):
     def execute(self, context):
         for z in Zoom:
             for v in View:
-                print((z,v))
+                print((z, v))
                 gui_ops_camera(v, z)
                 gui_ops_sun(v)
                 gui_ops_lod()
@@ -52,10 +54,11 @@ class B4BPreview(bpy.types.Operator):
     def execute(self, context):
         v = View[context.window_manager.interface_vars.rotation]
         z = Zoom[context.window_manager.interface_vars.zoom]
-        gui_ops_camera(v, z)
-        gui_ops_sun(v)
-        gui_ops_lod()
-        gui_ops_render(z, v, False)
+        # gui_ops_camera(v, z)
+        # gui_ops_sun(v)
+        # gui_ops_lod()
+        # gui_ops_render(z, v, False)
+        Rig.preview()
 
         # call gui_ops_LOD ? or just check if present and add if not
         # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
@@ -78,7 +81,6 @@ class B4BLODAdd(bpy.types.Operator):
     bl_label = "LOD Add"
 
     def execute(self, context):
-
         return {'FINISHED'}
 
 
@@ -87,7 +89,6 @@ class B4BLODDelete(bpy.types.Operator):
     bl_label = "LODDelete"
 
     def execute(self, context):
-
         return {'FINISHED'}
 
 
@@ -96,7 +97,6 @@ class B4BSunDelete(bpy.types.Operator):
     bl_label = "SunDelete"
 
     def execute(self, context):
-
         return {'FINISHED'}
 
 
@@ -105,7 +105,6 @@ class B4BSunAdd(bpy.types.Operator):
     bl_label = "SunAdd"
 
     def execute(self, context):
-
         return {'FINISHED'}
 
 
@@ -142,6 +141,3 @@ class MainPanel(bpy.types.Panel):
 
         layout.label(text="Render")
         self.layout.operator(Operators.RENDER.value[0], text="Render all zooms & rotations")
-
-
-
