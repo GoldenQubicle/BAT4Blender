@@ -3,9 +3,9 @@ import bpy
 import bpy_extras
 from math import tan, atan
 from mathutils import Vector
-from .LOD import LOD_NAME
-from .Camera import CAM_NAME
+from .Config import *
 from enum import Enum
+
 
 # render dimensions need to take view into account
 # sd default

@@ -2,8 +2,8 @@ import bpy
 from .Enums import View
 from math import radians
 # from enum import Enum
+from .Config import *
 
-SUN_NAME = 'sun'
 sun_loc = (0, 0, 1000)  # sun position doesn't matter, just put it somewhere up high and out of the way
 s_x = radians(180)
 s_y = radians(135.0)

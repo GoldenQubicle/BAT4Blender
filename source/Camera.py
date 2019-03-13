@@ -1,8 +1,8 @@
 import bpy
 from enum import Enum
 from math import radians, sin, cos
+from .Config import *
 
-CAM_NAME = "cam"
 camera_range = 190
 angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
 angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]

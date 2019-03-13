@@ -3,7 +3,6 @@ import bpy
 from .Enums import View, Zoom, Operators
 from .Camera import gui_ops_camera
 from .Sun import gui_ops_sun
-from .LOD import gui_ops_lod, gui_ops_lod_export
 from .Renderer import gui_ops_render
 from .Rig import *
 
@@ -42,7 +41,7 @@ class B4BRender(bpy.types.Operator):
                 print((z, v))
                 gui_ops_camera(v, z)
                 gui_ops_sun(v)
-                gui_ops_lod()
+                # gui_ops_lod()
                 gui_ops_render(z, v, True)
         return {"FINISHED"}
 
@@ -72,15 +71,16 @@ class B4BLODExport(bpy.types.Operator):
     bl_label = "LODExport"
 
     def execute(self, context):
-        gui_ops_lod_export()
+        Rig.lod_export()
         return {'FINISHED'}
 
 
 class B4BLODAdd(bpy.types.Operator):
-    bl_idname = Operators.LOD_ADD.value[0]
-    bl_label = "LOD Add"
+    bl_idname = Operators.LOD_FIT.value[0]
+    bl_label = "LOD fit"
 
     def execute(self, context):
+        Rig.lod_fit()
         return {'FINISHED'}
 
 
@@ -89,6 +89,7 @@ class B4BLODDelete(bpy.types.Operator):
     bl_label = "LODDelete"
 
     def execute(self, context):
+        Rig.lod_delete()
         return {'FINISHED'}
 
 
@@ -130,7 +131,7 @@ class MainPanel(bpy.types.Panel):
 
         layout.label(text="LOD")
         lod = layout.row(align=True)
-        lod.operator(Operators.LOD_ADD.value[0], text="Add")
+        lod.operator(Operators.LOD_FIT.value[0], text="Fit")
         lod.operator(Operators.LOD_DELETE.value[0], text="Delete")
         lod.operator(Operators.LOD_EXPORT.value[0], text="Export .3DS")
 
