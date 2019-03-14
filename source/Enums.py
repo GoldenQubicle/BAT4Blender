@@ -10,6 +10,8 @@ class Operators(Enum):
     LOD_DELETE = "object.b4b_lod_delete",
     SUN_ADD = "object.b4b_sun_add",
     SUN_DELETE = "object.b4b_sun_delete",
+    CAM_ADD = "object.b4b_camera_add",
+    CAM_DELETE = "object.b4b_camera_delete",
 
 
 class View(Enum):

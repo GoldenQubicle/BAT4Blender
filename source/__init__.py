@@ -23,6 +23,8 @@ def register():
     bpy.utils.register_class(B4BLODDelete)
     bpy.utils.register_class(B4BSunAdd)
     bpy.utils.register_class(B4BSunDelete)
+    bpy.utils.register_class(B4BCamAdd)
+    bpy.utils.register_class(B4BCamDelete)
 
 
 def unregister():
@@ -36,4 +38,5 @@ def unregister():
     bpy.utils.unregister_class(B4BLODDelete)
     bpy.utils.unregister_class(B4BSunAdd)
     bpy.utils.unregister_class(B4BSunDelete)
-
+    bpy.utils.unregister_class(B4BCamAdd)
+    bpy.utils.unregister_class(B4BCamDelete)

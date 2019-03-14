@@ -1,10 +1,6 @@
-import bpy
-
-from .Enums import View, Zoom, Operators
-from .Camera import gui_ops_camera
-from .Sun import gui_ops_sun
-from .Renderer import gui_ops_render
+from .Enums import *
 from .Rig import *
+from .LOD import *
 
 
 class InterfaceVars(bpy.types.PropertyGroup):
@@ -36,13 +32,6 @@ class B4BRender(bpy.types.Operator):
     bl_label = "Render all views & rotations"
 
     def execute(self, context):
-        for z in Zoom:
-            for v in View:
-                print((z, v))
-                gui_ops_camera(v, z)
-                gui_ops_sun(v)
-                # gui_ops_lod()
-                gui_ops_render(z, v, True)
         return {"FINISHED"}
 
 
@@ -53,16 +42,9 @@ class B4BPreview(bpy.types.Operator):
     def execute(self, context):
         v = View[context.window_manager.interface_vars.rotation]
         z = Zoom[context.window_manager.interface_vars.zoom]
-        # gui_ops_camera(v, z)
-        # gui_ops_sun(v)
-        # gui_ops_lod()
-        # gui_ops_render(z, v, False)
-        Rig.preview()
-
-        # call gui_ops_LOD ? or just check if present and add if not
-        # call gui_ops_render -- will this cause ui freezing . . may want to register a callback of sorts?
-        # print("sending")
-        # print((v,z))
+        Rig.setup(v, z)
+        # q: pass the context to the renderer? or just grab it from internals..
+        Renderer.generate_preview(z)
         return {'FINISHED'}
 
 
@@ -71,7 +53,7 @@ class B4BLODExport(bpy.types.Operator):
     bl_label = "LODExport"
 
     def execute(self, context):
-        Rig.lod_export()
+        LOD.export()
         return {'FINISHED'}
 
 
@@ -98,6 +80,7 @@ class B4BSunDelete(bpy.types.Operator):
     bl_label = "SunDelete"
 
     def execute(self, context):
+        Sun.delete_from_scene()
         return {'FINISHED'}
 
 
@@ -106,6 +89,25 @@ class B4BSunAdd(bpy.types.Operator):
     bl_label = "SunAdd"
 
     def execute(self, context):
+        Sun.add_to_scene()
+        return {'FINISHED'}
+
+
+class B4BCamAdd(bpy.types.Operator):
+    bl_idname = Operators.CAM_ADD.value[0]
+    bl_label = "CamAdd"
+
+    def execute(self, context):
+        Camera.add_to_scene()
+        return {'FINISHED'}
+
+
+class B4BCamDelete(bpy.types.Operator):
+    bl_idname = Operators.CAM_DELETE.value[0]
+    bl_label = "CamDelete"
+
+    def execute(self, context):
+        Camera.delete_from_scene()
         return {'FINISHED'}
 
 
@@ -135,10 +137,15 @@ class MainPanel(bpy.types.Panel):
         lod.operator(Operators.LOD_DELETE.value[0], text="Delete")
         lod.operator(Operators.LOD_EXPORT.value[0], text="Export .3DS")
 
+        layout.label(text="Camera")
+        cam = layout.row(align=True)
+        cam.operator(Operators.CAM_ADD.value[0], text="Add")
+        cam.operator(Operators.CAM_DELETE.value[0], text="Delete")
+
         layout.label(text="Sun")
         sun = layout.row(align=True)
-        sun.operator(Operators.SUN_ADD.value[0], text="Add Sun")
-        sun.operator(Operators.SUN_DELETE.value[0], text="Delete Sun")
+        sun.operator(Operators.SUN_ADD.value[0], text="Add")
+        sun.operator(Operators.SUN_DELETE.value[0], text="Delete")
 
         layout.label(text="Render")
         self.layout.operator(Operators.RENDER.value[0], text="Render all zooms & rotations")

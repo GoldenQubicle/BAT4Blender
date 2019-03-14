@@ -76,4 +76,19 @@ class LOD:
         bpy.context.scene.objects.link(c)
         bpy.context.scene.update()
 
+    @staticmethod
+    def export():
+        if LOD_NAME in bpy.data.objects:
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects[LOD_NAME].select = True
+            bpy.ops.export_scene.autodesk_3ds(
+                filepath="{}.3ds".format(FileManager.get_relative_path_for(LOD_NAME)),
+                check_existing=False,
+                axis_forward='Y',
+                axis_up='Z',
+                use_selection=True
+            )
+            bpy.data.objects[LOD_NAME].select = False
 
+        else:
+            print("there is no LOD to export!")

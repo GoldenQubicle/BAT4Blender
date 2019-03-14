@@ -1,39 +1,27 @@
-import bpy
-from .Config import *
 from .LOD import *
-from .FileManager import *
+from .Camera import *
+from .Sun import *
+from .Renderer import *
 
 
 class Rig:
     @staticmethod
-    def preview():
-        # print("debug script check")
-        if CAM_NAME not in bpy.data.objects \
-                or SUN_NAME not in bpy.data.objects \
-                or LOD_NAME not in bpy.data.objects:
-            print("yooo")
+    def setup(view, zoom):
+        if CAM_NAME not in bpy.data.objects:
+            Camera.add_to_scene()
+        if SUN_NAME not in bpy.data.objects:
+            Sun.add_to_scene()
+        if LOD_NAME not in bpy.data.objects:
+            LOD.fit_new()
+
+        Camera.update(view, zoom)
+        Sun.update(view)
+        bpy.context.scene.update()
 
     @staticmethod
     def lod_fit():
         Rig.lod_delete()
         LOD.fit_new()
-
-    @staticmethod
-    def lod_export():
-        if LOD_NAME in bpy.data.objects:
-            bpy.ops.object.select_all(action='DESELECT')
-            bpy.data.objects[LOD_NAME].select = True
-            bpy.ops.export_scene.autodesk_3ds(
-                filepath="{}.3ds".format(FileManager.get_relative_path_for(LOD_NAME)),
-                check_existing=False,
-                axis_forward='Y',
-                axis_up='Z',
-                use_selection=True
-            )
-            bpy.data.objects[LOD_NAME].select = False
-
-        else:
-            print("there is no LOD to export!")
 
     @staticmethod
     def lod_delete():
