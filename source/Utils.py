@@ -2,6 +2,12 @@ import bpy
 import os
 
 
+def tgi():
+    # 0x0003TZRU
+    print()
+
+
+
 def get_relative_path_for(fn):
     fp = bpy.data.filepath
     folder = os.path.dirname(fp)

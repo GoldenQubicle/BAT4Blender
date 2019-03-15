@@ -32,6 +32,11 @@ class B4BRender(bpy.types.Operator):
     bl_label = "Render all views & rotations"
 
     def execute(self, context):
+        z = Zoom.FIVE
+        v = View.NORTH
+        Rig.setup(v, z)
+        Renderer.generate_preview(z)
+
         return {"FINISHED"}
 
 
