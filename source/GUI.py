@@ -32,10 +32,12 @@ class B4BRender(bpy.types.Operator):
     bl_label = "Render all views & rotations"
 
     def execute(self, context):
-        z = Zoom.FIVE
-        v = View.NORTH
-        Rig.setup(v, z)
-        Renderer.generate_preview(z)
+        if context.scene.group_id != "default":
+            group = context.scene.group_id
+        for v in View:
+            for z in Zoom:
+                Rig.setup(v, z)
+                Renderer.generate_output(v, z, group)
 
         return {"FINISHED"}
 
@@ -153,4 +155,6 @@ class MainPanel(bpy.types.Panel):
         sun.operator(Operators.SUN_DELETE.value[0], text="Delete")
 
         layout.label(text="Render")
+        render = layout.row()
+        render.prop(context.scene, "group_id")
         self.layout.operator(Operators.RENDER.value[0], text="Render all zooms & rotations")

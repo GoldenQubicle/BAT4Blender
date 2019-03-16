@@ -2,7 +2,7 @@ import bpy
 from mathutils import Vector, Matrix
 from typing import List, Any
 from .Config import LOD_NAME
-
+from .Utils import get_relative_path_for
 
 class LOD:
     @staticmethod
@@ -82,7 +82,7 @@ class LOD:
             bpy.ops.object.select_all(action='DESELECT')
             bpy.data.objects[LOD_NAME].select = True
             bpy.ops.export_scene.autodesk_3ds(
-                filepath="{}.3ds".format(FileManager.get_relative_path_for(LOD_NAME)),
+                filepath="{}.3ds".format(get_relative_path_for(LOD_NAME)),
                 check_existing=False,
                 axis_forward='Y',
                 axis_up='Z',

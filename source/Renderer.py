@@ -12,42 +12,16 @@ render_dimension = [16, 32, 64, 128, 256]
 
 class Renderer:
     @staticmethod
-    def generate_sequence():
-        T = 0  # assuming day time render for now
-        U = 0  # depending on the dimension .. how to slice it tho?
-        for z in Zoom:
-            for v in View:
-                print()
+    def generate_output(v, z, gid):
 
-    @staticmethod
-    def generate_preview(zoom):
-        # so... question: how to handle custom lods.. i.e. non boxy lods..
-        lod = bpy.data.objects[LOD_NAME]
-        cam = bpy.data.objects[CAM_NAME]
-        depsgraph = bpy.context.scene.depsgraph
+        bpy.context.scene.render.image_settings.file_format = 'PNG'
+        bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+        # this might be a problem as i suspect the scale factor should be calculated for z5 exclusively
+        s_f = Renderer.camera_manouvring(z)
 
-        os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
-        os_gmax = Renderer.get_orthographic_scale_gmax()  # NOTE using hardcoded defaults! probably not quite correct. .
-        s_f = Renderer.get_scale_factor(os_lod, os_gmax)
-
-        os_cam = os_gmax * s_f
-        dim = render_dimension[zoom.value] * s_f
-        cam.data.ortho_scale = os_cam
-
-        # print("actual ortho scale")
-        # print(os_lod)
-        # print("gmax ortho scale")
-        # print(os_gmax)
-        # print("the scale factor")
-        # print(s_f)
-        # print("camera os")
-        # print(os_cam)
-        # print("output dim")
-        # print(dim)
-
-        Renderer.offset_camera(cam, lod, dim)
         if s_f > 1:
-            bpy.context.scene.camera = cam # apparently invoke default also checks if the scene has a camera..?
+            # output resolution! not I dont! it's already been handled since I tell blender to crop!
+            # HOWEVER this does have an interaction with the dimensions! as images > 256 are split, the rest is fine!
             row = 0
             b = 1 / s_f
             for i in range(0, s_f ** 2):
@@ -63,16 +37,40 @@ class Renderer:
                 bpy.data.scenes["Scene"].render.border_min_y = min_y
                 bpy.data.scenes["Scene"].render.border_max_y = max_y
                 bpy.context.scene.render.filepath = get_relative_path_for("B4B_{}_{}.png".format(col, row))
-                bpy.context.scene.render.image_settings.file_format = 'PNG'
-                bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+
                 bpy.ops.render.render(write_still=True)
+                # TODO figure out if the tile is empty
+                # if not, write it and increase the no count for the file name!
                 # print(col, row)
                 # print(min_x, max_x, min_y, max_y)
-                if col+1 == s_f:
+                if col + 1 == s_f:
                     row += 1
-
         else:
-            bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
+            filename = tgi(gid, z.value, v.value, 0)
+            bpy.context.scene.render.filepath = get_relative_path_for("{}.png".format(filename))
+            bpy.ops.render.render(write_still=True)
+
+    @staticmethod
+    def generate_preview(zoom):
+        Renderer.camera_manouvring(zoom)
+        bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
+
+    @staticmethod
+    def camera_manouvring(zoom):
+        lod = bpy.data.objects[LOD_NAME]
+        cam = bpy.data.objects[CAM_NAME]
+        depsgraph = bpy.context.scene.depsgraph
+        bpy.context.scene.camera = cam  # apparently invoke default also checks if the scene has a camera..?
+
+        os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
+        os_gmax = Renderer.get_orthographic_scale_gmax()  # NOTE using hardcoded defaults! probably not quite correct. .
+        s_f = Renderer.get_scale_factor(os_lod, os_gmax)
+
+        os_cam = os_gmax * s_f
+        dim = render_dimension[zoom.value] * s_f
+        cam.data.ortho_scale = os_cam
+        Renderer.offset_camera(cam, lod, dim)
+        return s_f
 
     @staticmethod
     def offset_camera(cam, lod, dim):
