@@ -14,11 +14,11 @@ class Operators(Enum):
     CAM_DELETE = "object.b4b_camera_delete",
 
 
-class View(Enum):
-    NORTH = 0
-    WEST = 1
-    SOUTH = 2
-    EAST = 3
+class Rotation(Enum):
+    SOUTH = 0
+    EAST = 1
+    NORTH = 2
+    WEST = 3
 
 
 class Zoom(Enum):

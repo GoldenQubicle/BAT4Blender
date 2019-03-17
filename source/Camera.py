@@ -1,7 +1,7 @@
 import bpy
 from math import radians, sin, cos
 from .Config import *
-from .Enums import Zoom, View
+from .Enums import Zoom, Rotation
 
 camera_range = 190
 angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
@@ -36,7 +36,6 @@ class Camera:
         cam_ob.data.shift_y = 0.0
         bpy.context.scene.objects.link(cam_ob)
 
-
     @staticmethod
     def update(rotation, zoom):
         (loc, rot) = Camera.get_location_and_rotation(rotation, zoom)
@@ -48,7 +47,7 @@ class Camera:
     @staticmethod
     def add_to_scene():
         if CAM_NAME not in bpy.data.objects:
-            (location, rotation) = Camera.get_location_and_rotation(View.NORTH, Zoom.FIVE)
+            (location, rotation) = Camera.get_location_and_rotation(Rotation.NORTH, Zoom.FIVE)
             Camera.set_camera(location, rotation)
 
     @staticmethod

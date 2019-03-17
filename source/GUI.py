@@ -7,12 +7,12 @@ class InterfaceVars(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
     rotation = bpy.props.EnumProperty(
         items=[
-            (View.NORTH.name, 'N', 'North view', '', View.NORTH.value),
-            (View.EAST.name, 'E', 'East view', '', View.EAST.value),
-            (View.SOUTH.name, 'S', 'South view', '', View.SOUTH.value),
-            (View.WEST.name, 'W', 'West view', '', View.WEST.value)
+            (Rotation.NORTH.name, 'N', 'North view', '', Rotation.NORTH.value),
+            (Rotation.EAST.name, 'E', 'East view', '', Rotation.EAST.value),
+            (Rotation.SOUTH.name, 'S', 'South view', '', Rotation.SOUTH.value),
+            (Rotation.WEST.name, 'W', 'West view', '', Rotation.WEST.value)
         ],
-        default=View.NORTH.name
+        default=Rotation.NORTH.name
     )
 
     zoom = bpy.props.EnumProperty(
@@ -34,7 +34,7 @@ class B4BRender(bpy.types.Operator):
     def execute(self, context):
         if context.scene.group_id != "default":
             group = context.scene.group_id
-        for v in View:
+        for v in Rotation:
             for z in Zoom:
                 Rig.setup(v, z)
                 Renderer.generate_output(v, z, group)
@@ -47,7 +47,7 @@ class B4BPreview(bpy.types.Operator):
     bl_label = "Preview"
 
     def execute(self, context):
-        v = View[context.window_manager.interface_vars.rotation]
+        v = Rotation[context.window_manager.interface_vars.rotation]
         z = Zoom[context.window_manager.interface_vars.zoom]
         Rig.setup(v, z)
         # q: pass the context to the renderer? or just grab it from internals..

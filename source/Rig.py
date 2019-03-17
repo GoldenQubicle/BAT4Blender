@@ -6,7 +6,7 @@ from .Renderer import *
 
 class Rig:
     @staticmethod
-    def setup(view, zoom):
+    def setup(rotation, zoom):
         if CAM_NAME not in bpy.data.objects:
             Camera.add_to_scene()
         if SUN_NAME not in bpy.data.objects:
@@ -14,8 +14,8 @@ class Rig:
         if LOD_NAME not in bpy.data.objects:
             LOD.fit_new()
 
-        Camera.update(view, zoom)
-        Sun.update(view)
+        Camera.update(rotation, zoom)
+        Sun.update(rotation)
         bpy.context.scene.update()
 
     @staticmethod
