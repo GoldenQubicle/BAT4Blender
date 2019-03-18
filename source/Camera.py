@@ -56,14 +56,14 @@ class Camera:
             ob = bpy.data.objects[CAM_NAME]
             bpy.data.cameras.remove(ob.data, do_unlink=True)
 
-    @staticmethod
-    def gui_ops_camera(rotation, zoom):
-        # if CAM_NAME not in bpy.data.objects:
-        for ob in bpy.data.objects:
-            if ob.type == 'CAMERA' and ob.name == CAM_NAME:
-                bpy.data.cameras.remove(ob.data, do_unlink=True)
-        (location, rotation) = Camera.get_location_and_rotation(rotation, zoom)
-        Camera.set_camera(location, rotation)
+    # @staticmethod
+    # def gui_ops_camera(rotation, zoom):
+    #     # if CAM_NAME not in bpy.data.objects:
+    #     for ob in bpy.data.objects:
+    #         if ob.type == 'CAMERA' and ob.name == CAM_NAME:
+    #             bpy.data.cameras.remove(ob.data, do_unlink=True)
+    #     (location, rotation) = Camera.get_location_and_rotation(rotation, zoom)
+    #     Camera.set_camera(location, rotation)
 
 
 # debug

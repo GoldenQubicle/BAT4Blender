@@ -1,6 +1,6 @@
 import bpy
-
 from .GUI import *
+from .GUI_ops import *
 
 bl_info = {
     "name": "BAT4Blender",

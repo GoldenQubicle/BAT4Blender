@@ -62,8 +62,8 @@ class Renderer:
         bpy.context.scene.camera = cam  # apparently invoke default also checks if the scene has a camera..?
 
         os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
-        os_gmax = Renderer.get_orthographic_scale_gmax(cam.location[2])  # NOTE using hardcoded defaults! probably not quite correct. .
-        default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .)
+        os_gmax = Renderer.get_orthographic_scale_gmax(cam.location[2])
+        default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .
         final_os = default_os + (default_os-os_gmax)
         s_f = Renderer.get_scale_factor(os_lod, final_os)
 
@@ -107,7 +107,7 @@ class Renderer:
         # print(y_top)
 
         # map the pixel values back to a 0..1 range to use as offset
-        slop = 1  # keep a 2 pixel distance from edge, can be made variable later for different levels
+        slop = 2  # keep a 2 pixel distance from edge, can be made variable later for different levels
         x_d = translate(x_left - slop, 0, dim_x, 0.0, 1.0)
         y_d = translate(y_top - (dim_y - slop), 0, dim_y, 0.0, 1.0)
         cam.data.shift_x = x_d

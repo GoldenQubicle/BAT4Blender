@@ -50,13 +50,13 @@ class Sun:
             ob = bpy.data.objects[SUN_NAME]
             bpy.data.lamps.remove(ob.data, do_unlink=True)
 
-    @staticmethod
-    def gui_ops_sun(rotation):
-        for ob in bpy.data.objects:
-            if ob.type == 'LAMP' and ob.name == SUN_NAME:
-                bpy.data.lamps.remove(ob.data, do_unlink=True)
-        sun_rot = Sun.get_sun_rotation(rotation)
-        Sun.set_sun(sun_rot)
+    # @staticmethod
+    # def gui_ops_sun(rotation):
+    #     for ob in bpy.data.objects:
+    #         if ob.type == 'LAMP' and ob.name == SUN_NAME:
+    #             bpy.data.lamps.remove(ob.data, do_unlink=True)
+    #     sun_rot = Sun.get_sun_rotation(rotation)
+    #     Sun.set_sun(sun_rot)
 
 
 # gui_ops_sun(View.NORTH)
