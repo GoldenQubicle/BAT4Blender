@@ -1,6 +1,6 @@
 import bpy
 from math import radians, sin, cos
-from .Config import *
+from .Config import CAM_NAME
 from .Enums import Zoom, Rotation
 
 camera_range = 190

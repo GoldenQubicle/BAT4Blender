@@ -35,7 +35,7 @@ def register():
 
 def unregister():
     del bpy.types.WindowManager.interface_vars
-    del bpy.types.Scene.my_string_prop
+    del bpy.types.Scene.group_id
     bpy.utils.unregister_class(InterfaceVars)
     bpy.utils.unregister_class(MainPanel)
     bpy.utils.unregister_class(B4BPreview)

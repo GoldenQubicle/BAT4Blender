@@ -11,16 +11,42 @@ render_dimension = [16, 32, 64, 128, 256]
 
 
 class Renderer:
+
+    @staticmethod
+    def enable_nodes():
+        # switch on nodes
+        bpy.context.scene.use_nodes = True
+        tree = bpy.context.scene.node_tree
+        links = tree.links
+
+        # clear default nodes
+        for n in tree.nodes:
+            tree.nodes.remove(n)
+
+        # create input render layer node
+        rl = tree.nodes.new('CompositorNodeRLayers')
+        rl.location = 185, 285
+
+        # create output node
+        v = tree.nodes.new('CompositorNodeViewer')
+        v.location = 750, 210
+        v.use_alpha = False
+
+        # Links
+        links.new(rl.outputs[0], v.inputs[0])  # link Image output to Viewer input
+
     @staticmethod
     def generate_output(v, z, gid):
 
         bpy.context.scene.render.image_settings.file_format = 'PNG'
         bpy.context.scene.render.image_settings.color_mode = 'RGBA'
         # this might be a problem as i suspect the scale factor should be calculated for z5 exclusively
-        s_f = Renderer.camera_manouvring(z)
-        # probably need to check of output dim > 256..
-        if s_f > 1:
+        s_f, dim = Renderer.camera_manouvring(z)
+
+        if dim > 256:
+            Renderer.enable_nodes()
             row = 0
+            count = 0
             b = 1 / s_f
             for i in range(0, s_f ** 2):
                 col = i % s_f
@@ -28,30 +54,46 @@ class Renderer:
                 max_x = min_x + b
                 max_y = 1 - (row * b)
                 min_y = max_y - b
-                print(min_x, max_x, min_y, max_y)
+                # print(min_x, max_x, min_y, max_y)
+                # print("col {} and row {}".format(col, row))
                 bpy.context.scene.render.use_border = True
                 bpy.context.scene.render.use_crop_to_border = True
                 bpy.context.scene.render.border_min_x = min_x
                 bpy.context.scene.render.border_max_x = max_x
                 bpy.context.scene.render.border_min_y = min_y
                 bpy.context.scene.render.border_max_y = max_y
-                bpy.context.scene.render.filepath = get_relative_path_for("B4B_{}_{}.png".format(col, row))
+                path = get_relative_path_for("B4B_{}_{}.png".format(col, row))
+                # bpy.context.scene.render.filepath = get_relative_path_for("B4B_{}_{}.png".format(col, row))
 
-                bpy.ops.render.render(write_still=True)
-                # TODO figure out if the tile is empty
-                # if not, write it and increase the no count for the file name!
-                # print(col, row)
-                # print(min_x, max_x, min_y, max_y)
+                bpy.ops.render.render()
+                # get viewer pixels
+                pixels = bpy.data.images['Viewer Node'].pixels
+                print("checking for empty tiles now")
+                for px in range(0, len(pixels) - 1, 4):  # basically only checking r channel..
+                    if pixels[px] > 0.0:
+                        filename = tgi(gid, z.value, v.value, count)
+                        path = get_relative_path_for("{}.png".format(filename))
+                        bpy.data.images['Viewer Node'].save_render(path)
+                        count += 1
+                        print("saved image {}".format(path))
+                        break
+
                 if col + 1 == s_f:
                     row += 1
         else:
             filename = tgi(gid, z.value, v.value, 0)
             bpy.context.scene.render.filepath = get_relative_path_for("{}.png".format(filename))
             bpy.ops.render.render(write_still=True)
+            print("rendering single image")
 
     @staticmethod
     def generate_preview(zoom):
         Renderer.camera_manouvring(zoom)
+        #  reset camera border in case a large view has been rendered.. may want to do this after rendering instead
+        bpy.context.scene.render.border_min_x = 0.0
+        bpy.context.scene.render.border_max_x = 1.0
+        bpy.context.scene.render.border_min_y = 0.0
+        bpy.context.scene.render.border_max_y = 1.0
         bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
 
     @staticmethod
@@ -64,7 +106,7 @@ class Renderer:
         os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
         os_gmax = Renderer.get_orthographic_scale_gmax(cam.location[2])
         default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .
-        final_os = default_os + (default_os-os_gmax)
+        final_os = default_os + (default_os - os_gmax)
         s_f = Renderer.get_scale_factor(os_lod, final_os)
 
         os_cam = final_os * s_f
@@ -73,7 +115,7 @@ class Renderer:
         Renderer.offset_camera(cam, lod, dim)
         print("scale is {} and output dim is {}".format(s_f, dim))
 
-        return s_f
+        return s_f, dim
 
     @staticmethod
     def offset_camera(cam, lod, dim):

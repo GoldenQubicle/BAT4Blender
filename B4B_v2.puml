@@ -81,7 +81,7 @@ package GUI {
 
     }
 }
-note left of GUI_Ops : implement Blender operators class
+'note left of GUI_Ops : implement Blender operators class
 
 
 

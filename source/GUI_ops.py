@@ -10,8 +10,8 @@ class B4BRender(bpy.types.Operator):
     def execute(self, context):
         if context.scene.group_id != "default":
             group = context.scene.group_id
-        for v in Rotation:
-            for z in Zoom:
+        for z in Zoom:
+            for v in Rotation:
                 Rig.setup(v, z)
                 Renderer.generate_output(v, z, group)
 

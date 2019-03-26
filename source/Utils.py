@@ -6,7 +6,7 @@ tid = "7ab50e44"
 
 def tgi(gid, z, v, no):
     t = 0  # default to day render
-    iid = "0003{}{}{}{}".format(t, z, v, no)  # NOTE not yet ready for tiled render
+    iid = "0003{}{}{}{}".format(t, z, v, no)
 
     return "{}-{}-{}".format(tid, gid, iid)
 
