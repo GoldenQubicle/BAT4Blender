@@ -1,0 +1,182 @@
+@startuml
+
+
+'package __init__ {
+'    object register {
+'
+'    }
+'    object unregister {
+'    }
+'}
+
+package Enums{
+
+    enum Rotatation {
+    SOUTH
+    EAST
+    NORTH
+    WEST
+    }
+
+    enum Zoom {
+    ONE
+    TWO
+    THREE
+    FOUR
+    FIVE
+    }
+
+    enum Operators {
+        PREVIEW
+        RENDER
+        LOD_EXPORT
+        LOD_FIT
+        LOD_CUSTOM // na
+        LOD_DELETE
+        SUN_ADD
+        SUN_DELETE
+        CAM_ADD
+        CAM_DELETE
+    }
+}
+
+
+package Camera {
+    class Camera{
+    get_location_and_rotation(rotation, zoom)
+    set_camera(location, angle)
+    ----
+    update(rotation, zoom)
+    ----
+    add_to_scene()
+    delete_from_scene()
+
+    }
+}
+
+package Config {
+    object Names {
+
+    }
+}
+
+package LOD {
+    class LOD {
+        get_all_bound_boxes()
+        get_min_max_xyz(bound_boxes)
+        create_and_update(vertices)
+        get_mesh_cube(name)
+        ----
+        fit_new()
+        ----
+        export()
+    }
+}
+
+package Renderer {
+
+    class Renderer{
+        camera_manouvring(zoom)
+        get_orthographic_scale(depsgraph, camera, lod)
+        get_orthographic_scale_gmax(camera_z)
+        get_scale_factor(os_LOD, os_GMAX)
+        offset_camera(camera, lod, dimension)
+        ----
+        generate_output(rotation, zoom, gid)
+        ----
+        generate_preview(zoom)
+
+    }
+}
+
+package Rig {
+    class Rig {
+        setup(rotation, zoom)
+        lod_fit()
+        lod_delete()
+    }
+}
+
+package Sun {
+    class Sun{
+        get_sun_rotation(rotation)
+        set_sun(rotation)
+        ----
+        update(rotation)
+        ----
+        add_to_scene()
+        delete_from_scene()
+    }
+}
+
+note top of Utils: some helper methods
+note top of Config : remnant of earlier structure could do away with?
+package Utils {
+
+    object tgi_formatter{
+    }
+    object get_relative_path_for {
+    }
+    object translate {
+    }
+
+}
+
+package GUI {
+
+    class MainPanel {
+
+    }
+
+    class InterfaceVars {
+
+    }
+}
+note left of GUI_Ops : all of these implement Blender operators class \n and have a execute() method
+
+
+
+package GUI_Ops{
+         class PREVIEW {
+         }
+        class RENDER{
+        }
+        class LOD_EXPORT{
+        }
+        class LOD_FIT {
+        }
+
+        class LOD_DELETE{
+        }
+        class SUN_ADD{
+        }
+        class SUN_DELETE{
+        }
+        class CAM_ADD{
+        }
+        class CAM_DELETE{
+        }
+    }
+
+
+
+
+MainPanel --> GUI_Ops
+RENDER --> Rig
+RENDER --> Renderer
+PREVIEW --> Rig
+PREVIEW --> Renderer
+LOD_EXPORT --> LOD
+LOD_FIT --> Rig
+LOD_DELETE --> Rig
+SUN_ADD --> Sun
+SUN_DELETE --> Sun
+CAM_ADD --> Camera
+CAM_DELETE --> Camera
+Rig -down-> Sun
+Rig -down-> Camera
+Rig -down-> LOD
+
+
+
+@enduml
