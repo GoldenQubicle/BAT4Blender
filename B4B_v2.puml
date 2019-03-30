@@ -1,6 +1,46 @@
 @startuml
 
 
+'package __init__ {
+'    object register {
+'
+'    }
+'    object unregister {
+'    }
+'}
+
+package Enums{
+
+    enum Rotatation {
+    SOUTH
+    EAST
+    NORTH
+    WEST
+    }
+
+    enum Zoom {
+    ONE
+    TWO
+    THREE
+    FOUR
+    FIVE
+    }
+
+    enum Operators {
+        PREVIEW
+        RENDER
+        LOD_EXPORT
+        LOD_FIT
+        LOD_CUSTOM // na
+        LOD_DELETE
+        SUN_ADD
+        SUN_DELETE
+        CAM_ADD
+        CAM_DELETE
+    }
+}
+
+
 package Camera {
     class Camera{
     get_location_and_rotation(rotation, zoom)
@@ -15,7 +55,9 @@ package Camera {
 }
 
 package Config {
+    object Names {
 
+    }
 }
 
 package LOD {
@@ -67,7 +109,16 @@ package Sun {
     }
 }
 
+note top of Utils: some helper methods
+note top of Config : remnant of earlier structure could do away with?
 package Utils {
+
+    object tgi_formatter{
+    }
+    object get_relative_path_for {
+    }
+    object translate {
+    }
 
 }
 
@@ -81,7 +132,7 @@ package GUI {
 
     }
 }
-'note left of GUI_Ops : implement Blender operators class
+note left of GUI_Ops : all of these implement Blender operators class \n and have a execute() method
 
 
 
@@ -109,36 +160,6 @@ package GUI_Ops{
 
 
 
-package Enums{
-
-    enum Rotatation {
-    SOUTH
-    EAST
-    NORTH
-    WEST
-    }
-
-    enum Zoom {
-    ONE
-    TWO
-    THREE
-    FOUR
-    FIVE
-    }
-
-    enum Operators {
-        PREVIEW
-        RENDER
-        LOD_EXPORT
-        LOD_FIT
-        LOD_CUSTOM // na
-        LOD_DELETE
-        SUN_ADD
-        SUN_DELETE
-        CAM_ADD
-        CAM_DELETE
-    }
-}
 
 MainPanel --> GUI_Ops
 RENDER --> Rig
@@ -152,6 +173,9 @@ SUN_ADD --> Sun
 SUN_DELETE --> Sun
 CAM_ADD --> Camera
 CAM_DELETE --> Camera
+Rig -down-> Sun
+Rig -down-> Camera
+Rig -down-> LOD
 
 
 

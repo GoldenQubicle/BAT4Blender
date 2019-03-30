@@ -31,6 +31,8 @@ def register():
     bpy.utils.register_class(B4BSunDelete)
     bpy.utils.register_class(B4BCamAdd)
     bpy.utils.register_class(B4BCamDelete)
+    bpy.utils.register_class(OkOperator)
+    bpy.utils.register_class(MessageOperator)
 
 
 def unregister():
@@ -47,3 +49,5 @@ def unregister():
     bpy.utils.unregister_class(B4BSunDelete)
     bpy.utils.unregister_class(B4BCamAdd)
     bpy.utils.unregister_class(B4BCamDelete)
+    bpy.utils.unregister_class(OkOperator)
+    bpy.utils.unregister_class(MessageOperator)

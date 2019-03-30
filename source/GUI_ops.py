@@ -1,6 +1,44 @@
 import bpy
 from .Enums import *
 from .Rig import *
+from bpy.props import *
+
+#
+#   The OK button in the error dialog
+#
+
+
+class OkOperator(bpy.types.Operator):
+    bl_idname = "error.ok"
+    bl_label = "OK"
+
+    def execute(self, context):
+        return {'FINISHED'}
+
+
+class MessageOperator(bpy.types.Operator):
+    bl_idname = "error.message"
+    bl_label = "Message"
+    type = StringProperty()
+    message = StringProperty()
+
+    def execute(self, context):
+        self.report({'INFO'}, self.message)
+        print(self.message)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_popup(self, width=400, height=200)
+
+    def draw(self, context):
+        self.layout.label("A message has arrived")
+        row = self.layout.split(0.25)
+        row.prop(self, "type")
+        row.prop(self, "message")
+        row = self.layout.split(0.80)
+        row.label("")
+        row.operator("error.ok")
 
 
 class B4BRender(bpy.types.Operator):
@@ -10,10 +48,15 @@ class B4BRender(bpy.types.Operator):
     def execute(self, context):
         if context.scene.group_id != "default":
             group = context.scene.group_id
-        for z in Zoom:
-            for v in Rotation:
-                Rig.setup(v, z)
-                Renderer.generate_output(v, z, group)
+        if Renderer.check_scale():
+            bpy.ops.error.message('INVOKE_DEFAULT',
+                                  type="Info",
+                                  message='model is too large to render')
+        else:
+            for z in Zoom:
+                for v in Rotation:
+                    Rig.setup(v, z)
+                    Renderer.generate_output(v, z, group)
 
         return {"FINISHED"}
 

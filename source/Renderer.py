@@ -1,4 +1,5 @@
 import bpy_extras
+
 from math import tan, atan
 from mathutils import Vector
 from .Config import *
@@ -44,44 +45,45 @@ class Renderer:
         s_f, dim = Renderer.camera_manouvring(z)
 
         if dim > 256:
-            Renderer.enable_nodes()
-            row = 0
-            count = 0
-            b = 1 / s_f
-            for i in range(0, s_f ** 2):
-                col = i % s_f
-                min_x = col * b
-                max_x = min_x + b
-                max_y = 1 - (row * b)
-                min_y = max_y - b
-                # print(min_x, max_x, min_y, max_y)
-                # print("col {} and row {}".format(col, row))
-                bpy.context.scene.render.use_border = True
-                bpy.context.scene.render.use_crop_to_border = True
-                bpy.context.scene.render.border_min_x = min_x
-                bpy.context.scene.render.border_max_x = max_x
-                bpy.context.scene.render.border_min_y = min_y
-                bpy.context.scene.render.border_max_y = max_y
-                path = get_relative_path_for("B4B_{}_{}.png".format(col, row))
-                # bpy.context.scene.render.filepath = get_relative_path_for("B4B_{}_{}.png".format(col, row))
-
-                bpy.ops.render.render()
-                # get viewer pixels
-                pixels = bpy.data.images['Viewer Node'].pixels
-                print("checking for empty tiles now")
-                for px in range(0, len(pixels) - 1, 4):  # basically only checking r channel..
-                    if pixels[px] > 0.0:
-                        filename = tgi(gid, z.value, v.value, count)
-                        path = get_relative_path_for("{}.png".format(filename))
-                        bpy.data.images['Viewer Node'].save_render(path)
-                        count += 1
-                        print("saved image {}".format(path))
-                        break
-
-                if col + 1 == s_f:
-                    row += 1
+            print()
+            # Renderer.enable_nodes()
+            # row = 0
+            # count = 0
+            # b = 1 / s_f
+            # for i in range(0, s_f ** 2):
+            #     col = i % s_f
+            #     min_x = col * b
+            #     max_x = min_x + b
+            #     max_y = 1 - (row * b)
+            #     min_y = max_y - b
+            #     # print(min_x, max_x, min_y, max_y)
+            #     # print("col {} and row {}".format(col, row))
+            #     bpy.context.scene.render.use_border = True
+            #     bpy.context.scene.render.use_crop_to_border = True
+            #     bpy.context.scene.render.border_min_x = min_x
+            #     bpy.context.scene.render.border_max_x = max_x
+            #     bpy.context.scene.render.border_min_y = min_y
+            #     bpy.context.scene.render.border_max_y = max_y
+            #     path = get_relative_path_for("B4B_{}_{}.png".format(col, row))
+            #     # bpy.context.scene.render.filepath = get_relative_path_for("B4B_{}_{}.png".format(col, row))
+            #
+            #     bpy.ops.render.render()
+            #     # get viewer pixels
+            #     pixels = bpy.data.images['Viewer Node'].pixels
+            #     print("checking for empty tiles now")
+            #     for px in range(0, len(pixels) - 1, 4):  # basically only checking r channel..
+            #         if pixels[px] > 0.0:
+            #             filename = tgi_formatter(gid, z.value, v.value, count)
+            #             path = get_relative_path_for("{}.png".format(filename))
+            #             bpy.data.images['Viewer Node'].save_render(path)
+            #             count += 1
+            #             print("saved image {}".format(path))
+            #             break
+            #
+            #     if col + 1 == s_f:
+            #         row += 1
         else:
-            filename = tgi(gid, z.value, v.value, 0)
+            filename = tgi_formatter(gid, z.value, v.value, 0)
             bpy.context.scene.render.filepath = get_relative_path_for("{}.png".format(filename))
             bpy.ops.render.render(write_still=True)
             print("rendering single image")
@@ -95,6 +97,19 @@ class Renderer:
         bpy.context.scene.render.border_min_y = 0.0
         bpy.context.scene.render.border_max_y = 1.0
         bpy.ops.render.render('INVOKE_DEFAULT', write_still=False)
+
+    @staticmethod
+    def check_scale():
+        lod = bpy.context.scene.objects[LOD_NAME]
+        cam = bpy.context.scene.objects[CAM_NAME]
+        depsgraph = bpy.context.scene.depsgraph
+        os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
+        os_gmax = Renderer.get_orthographic_scale_gmax(cam.location[2])
+        default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .
+        final_os = default_os + (default_os - os_gmax)
+        s_f = Renderer.get_scale_factor(os_lod, final_os)
+        return s_f >= 2
+
 
     @staticmethod
     def camera_manouvring(zoom):
