@@ -27,7 +27,7 @@ class MainPanel(bpy.types.Panel):
         lod = layout.row(align=True)
         lod.operator(Operators.LOD_FIT.value[0], text="Fit")
         lod.operator(Operators.LOD_DELETE.value[0], text="Delete")
-        lod.operator(Operators.LOD_EXPORT.value[0], text="Export .3DS")
+        lod.operator(Operators.LOD_EXPORT.value[0], text="Export .OBJ")
 
         layout.label(text="Camera")
         cam = layout.row(align=True)
@@ -47,7 +47,7 @@ class MainPanel(bpy.types.Panel):
 
 class InterfaceVars(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
-    rotation = bpy.props.EnumProperty(
+    rotation: bpy.props.EnumProperty(
         items=[
             (Rotation.NORTH.name, 'N', 'North view', '', Rotation.NORTH.value),
             (Rotation.EAST.name, 'E', 'East view', '', Rotation.EAST.value),
@@ -57,7 +57,7 @@ class InterfaceVars(bpy.types.PropertyGroup):
         default=Rotation.NORTH.name
     )
 
-    zoom = bpy.props.EnumProperty(
+    zoom: bpy.props.EnumProperty(
         items=[
             (Zoom.ONE.name, '1', 'zoom 1', '', Zoom.ONE.value),
             (Zoom.TWO.name, '2', 'zoom 2', '', Zoom.TWO.value),

@@ -85,8 +85,8 @@ class Renderer:
         else:
             filename = tgi_formatter(gid, z.value, v.value, 0)
             bpy.context.scene.render.filepath = get_relative_path_for("{}.png".format(filename))
-            bpy.ops.render.render(write_still=True)
             print("rendering single image")
+            bpy.ops.render.render(write_still=True)
 
     @staticmethod
     def generate_preview(zoom):
@@ -102,7 +102,7 @@ class Renderer:
     def check_scale():
         lod = bpy.context.scene.objects[LOD_NAME]
         cam = bpy.context.scene.objects[CAM_NAME]
-        depsgraph = bpy.context.scene.depsgraph
+        depsgraph = bpy.context.evaluated_depsgraph_get()
         os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
         os_gmax = Renderer.get_orthographic_scale_gmax(cam.location[2])
         default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .
@@ -115,7 +115,7 @@ class Renderer:
     def camera_manouvring(zoom):
         lod = bpy.context.scene.objects[LOD_NAME]
         cam = bpy.context.scene.objects[CAM_NAME]
-        depsgraph = bpy.context.scene.depsgraph
+        depsgraph = bpy.context.evaluated_depsgraph_get()
         bpy.context.scene.camera = cam  # apparently invoke default also checks if the scene has a camera..?
 
         os_lod = Renderer.get_orthographic_scale(depsgraph, cam, lod)
@@ -123,6 +123,9 @@ class Renderer:
         default_os = Renderer.get_orthographic_scale_gmax(134.35028)  # default location for zoom 5. .
         final_os = default_os + (default_os - os_gmax)
         s_f = Renderer.get_scale_factor(os_lod, final_os)
+        # TODO Scale factor does not have to increment in powers of 2. All that
+        # matters is that dimensions of rendered images are multiples of 4 px
+        # and <= 256 px.
 
         os_cam = final_os * s_f
         dim = render_dimension[zoom.value] * s_f
@@ -140,21 +143,14 @@ class Renderer:
         cam.data.shift_x = 0.0
         cam.data.shift_y = 0.0
         # get the 2d camera view coordinates for the LOD... is this a correct assumption?
-        coordinates = [lod.matrix_world * Vector(corner) for corner in lod.bound_box]
+        coordinates = [lod.matrix_world @ Vector(corner) for corner in lod.bound_box]
         coords_2d = [bpy_extras.object_utils.world_to_camera_view(bpy.context.scene, cam, coord) for coord in
                      coordinates]
 
         # grab outer left and top vertex in the camera view
         # map their 0..1 range to pixels to determine how far theLOD is from the left and top edges
-        c_x = []
-        c_y = []
-
-        for c in coords_2d:
-            c_x.append(c[0])
-            c_y.append(c[1])
-
-        min_x = min(c_x)
-        max_y = max(c_y)
+        min_x = min(c[0] for c in coords_2d)
+        max_y = max(c[1] for c in coords_2d)
 
         x_left = min_x * dim_x
         y_top = max_y * dim_y
@@ -176,13 +172,14 @@ class Renderer:
         # so yeah lets not do this, instead just make sure to write all sections with a correct file name
         # because that way, on convert / import as fsh the 'blank' tiles will just not be applied to the LOD
         # however, this is a bit wasteful as it does limit the render size (i.e. 0..F is simply taken up earlier)
-        # also, related, I have no way of checking of part of the model is in the lower right quadrant as the
+        # also, related, I have no way of checking if part of the model is in the lower right quadrant as the
         # positional check is performed on a vertex basis
         bpy.context.scene.render.resolution_x = dim_x
         bpy.context.scene.render.resolution_y = dim_y
 
     @staticmethod
     def get_scale_factor(os_lod, os_gmax):
+        assert os_gmax > 0 and os_lod > 0
         factor = 1
         while os_lod > os_gmax:
             factor *= 2
@@ -191,13 +188,10 @@ class Renderer:
 
     @staticmethod
     def get_orthographic_scale(dg, cam, lod):
-        coordinates = [lod.matrix_world * Vector(corner) for corner in lod.bound_box]
-        co_list = []
-        for v in coordinates:
-            for f in v:
-                co_list.append(f)
-
-        return cam.camera_fit_coords(dg, co_list)[1]
+        coordinates = [lod.matrix_world @ Vector(corner) for corner in lod.bound_box]
+        coordinates_flat = [vi for v in coordinates for vi in v]
+        loc, scale = cam.camera_fit_coords(dg, coordinates_flat)
+        return scale
 
     # NOTE currently passing in camera height depending on zoom
     # not sure if that's correct, i.e. perhaps the OS for z5 should be used throughout

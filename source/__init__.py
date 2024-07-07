@@ -5,14 +5,15 @@ from .GUI_ops import *
 bl_info = {
     "name": "BAT4Blender",
     "category": "Render",
-    "blender": (2, 79, 0),
+    "blender": (3, 2, 0),  # minimum Blender version
     "author": "vrtxt",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
 }
 
 
 # note: registering is order dependent! i.e. registering layout before vars will throw errors
 def register():
+    print("Registering addon BAT4Blender.")
     bpy.utils.register_class(InterfaceVars)
     bpy.types.WindowManager.interface_vars = bpy.props.PointerProperty(type=InterfaceVars)
     bpy.types.Scene.group_id = bpy.props.StringProperty(
@@ -36,6 +37,7 @@ def register():
 
 
 def unregister():
+    print("Unregistering addon BAT4Blender.")
     del bpy.types.WindowManager.interface_vars
     del bpy.types.Scene.group_id
     bpy.utils.unregister_class(InterfaceVars)

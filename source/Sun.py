@@ -24,13 +24,13 @@ class Sun:
 
     @staticmethod
     def set_sun(rotation):
-        sun = bpy.data.lamps.new(SUN_NAME, "SUN")  # name, type
+        sun = bpy.data.lights.new(SUN_NAME, "SUN")  # name, type
         sun_ob = bpy.data.objects.new(SUN_NAME, sun)
         sun_ob.rotation_mode = "XYZ"
         sun_ob.location = sun_loc
         sun_ob.rotation_euler = rotation
-        bpy.context.scene.objects.link(sun_ob)
-        bpy.context.scene.update()
+        bpy.context.collection.objects.link(sun_ob)
+        bpy.context.view_layer.update()
 
 
     @staticmethod
@@ -48,13 +48,13 @@ class Sun:
     def delete_from_scene():
         if SUN_NAME in bpy.data.objects:
             ob = bpy.data.objects[SUN_NAME]
-            bpy.data.lamps.remove(ob.data, do_unlink=True)
+            bpy.data.lights.remove(ob.data, do_unlink=True)
 
     # @staticmethod
     # def gui_ops_sun(rotation):
     #     for ob in bpy.data.objects:
     #         if ob.type == 'LAMP' and ob.name == SUN_NAME:
-    #             bpy.data.lamps.remove(ob.data, do_unlink=True)
+    #             bpy.data.lights.remove(ob.data, do_unlink=True)
     #     sun_rot = Sun.get_sun_rotation(rotation)
     #     Sun.set_sun(sun_rot)
 

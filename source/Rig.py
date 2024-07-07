@@ -16,7 +16,7 @@ class Rig:
 
         Camera.update(rotation, zoom)
         Sun.update(rotation)
-        bpy.context.scene.update()
+        bpy.context.view_layer.update()
 
     @staticmethod
     def lod_fit():
@@ -27,6 +27,6 @@ class Rig:
     def lod_delete():
         if LOD_NAME in bpy.data.objects:
             ob = bpy.data.objects[LOD_NAME]
-            bpy.data.meshes.remove(ob.data)
-            bpy.data.objects.remove(ob, do_unlink=True, do_ui_user=True)
-        bpy.context.scene.update()
+            bpy.data.meshes.remove(ob.data, do_unlink=True, do_ui_user=True)
+            # bpy.data.objects.remove(ob, do_unlink=True, do_ui_user=True)  # already seems to be removed by `bpy.data.meshes.remove`
+        bpy.context.view_layer.update()

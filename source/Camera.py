@@ -3,7 +3,7 @@ from math import radians, sin, cos
 from .Config import CAM_NAME
 from .Enums import Zoom, Rotation
 
-camera_range = 190
+camera_range = 190  # distance of camera from origin
 angle_zoom = [radians(60), radians(55), radians(50), radians(45)]
 angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]
 
@@ -11,16 +11,14 @@ angle_rotation = [radians(-67.5), radians(22.5), radians(112.5), radians(202.5)]
 class Camera:
     @staticmethod
     def get_location_and_rotation(rotation, zoom):
-        level = zoom.value
-        if level > 3:  # zoom 4, 5 & 6 all use the same camera angle
-            level = 3
+        pitch = angle_zoom[min(zoom.value, len(angle_zoom) - 1)]  # zoom 4, 5 & 6 all use the same camera angle
+        yaw = angle_rotation[rotation.value]
 
-        x = camera_range * sin(angle_zoom[level]) * cos(angle_rotation[rotation.value])
-        y = camera_range * sin(angle_zoom[level]) * sin(angle_rotation[rotation.value])
-        z = camera_range * cos(angle_zoom[level])
+        x = camera_range * sin(pitch) * cos(yaw)
+        y = camera_range * sin(pitch) * sin(yaw)
+        z = camera_range * cos(pitch)
         loc = (x, y, z)
-        rot = (angle_zoom[level], 0,
-               angle_rotation[rotation.value] + radians(90))  # need to add 90 for proper camera location in scene. .
+        rot = (pitch, 0, yaw + radians(90))  # need to add 90 for proper camera location in scene
         return [loc, rot]
 
     @staticmethod
@@ -34,15 +32,14 @@ class Camera:
         cam_ob.rotation_euler = angles
         cam_ob.data.shift_x = 0.0
         cam_ob.data.shift_y = 0.0
-        bpy.context.scene.objects.link(cam_ob)
+        bpy.context.collection.objects.link(cam_ob)
 
     @staticmethod
     def update(rotation, zoom):
         (loc, rot) = Camera.get_location_and_rotation(rotation, zoom)
         bpy.data.objects[CAM_NAME].location = loc
         bpy.data.objects[CAM_NAME].rotation_euler = rot
-        bpy.context.scene.update()
-
+        bpy.context.view_layer.update()
 
     @staticmethod
     def add_to_scene():

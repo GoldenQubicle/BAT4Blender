@@ -16,7 +16,7 @@ class LOD:
         b_boxes = []
         for obj in bpy.context.scene.objects:
             if obj.type == 'MESH':
-                bbox_corners = [obj.matrix_world * Vector(corner) for corner in obj.bound_box]
+                bbox_corners = [obj.matrix_world @ Vector(corner) for corner in obj.bound_box]
                 b_boxes.append(bbox_corners)
         return b_boxes
 
@@ -68,27 +68,25 @@ class LOD:
         loc = (xyz_mm[0] + width / 2, xyz_mm[2] + depth / 2, xyz_mm[4] + height / 2)
 
         c = LOD.get_mesh_cube(LOD_NAME)
-        c.matrix_world *= Matrix.Translation(loc)
-        c.matrix_world *= Matrix.Scale(width / 2, 4, (1, 0, 0))
-        c.matrix_world *= Matrix.Scale(depth / 2, 4, (0, 1, 0))
-        c.matrix_world *= Matrix.Scale(height / 2, 4, (0, 0, 1))
+        c.matrix_world @= Matrix.Translation(loc)
+        c.matrix_world @= Matrix.Scale(width / 2, 4, (1, 0, 0))
+        c.matrix_world @= Matrix.Scale(depth / 2, 4, (0, 1, 0))
+        c.matrix_world @= Matrix.Scale(height / 2, 4, (0, 0, 1))
         c.hide_render = True
-        bpy.context.scene.objects.link(c)
-        bpy.context.scene.update()
+        bpy.context.collection.objects.link(c)
+        bpy.context.view_layer.update()
 
     @staticmethod
     def export():
         if LOD_NAME in bpy.data.objects:
-            bpy.ops.object.select_all(action='DESELECT')
-            bpy.data.objects[LOD_NAME].select = True
-            bpy.ops.export_scene.autodesk_3ds(
-                filepath="{}.3ds".format(get_relative_path_for(LOD_NAME)),
-                check_existing=False,
-                axis_forward='Y',
-                axis_up='Z',
-                use_selection=True
-            )
-            bpy.data.objects[LOD_NAME].select = False
+            with bpy.context.temp_override(selected_objects=[bpy.data.objects[LOD_NAME]]):
+                bpy.ops.export_scene.obj(
+                    filepath="{}.obj".format(get_relative_path_for(LOD_NAME)),
+                    check_existing=False,
+                    axis_forward='Y',
+                    axis_up='Z',
+                    use_selection=True
+                )
 
         else:
             print("there is no LOD to export!")

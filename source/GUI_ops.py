@@ -3,11 +3,8 @@ from .Enums import *
 from .Rig import *
 from bpy.props import *
 
-#
-#   The OK button in the error dialog
-#
 
-
+# The OK button in the error dialog
 class OkOperator(bpy.types.Operator):
     bl_idname = "error.ok"
     bl_label = "OK"
@@ -19,8 +16,8 @@ class OkOperator(bpy.types.Operator):
 class MessageOperator(bpy.types.Operator):
     bl_idname = "error.message"
     bl_label = "Message"
-    type = StringProperty()
-    message = StringProperty()
+    type: StringProperty()
+    message: StringProperty()
 
     def execute(self, context):
         self.report({'INFO'}, self.message)
@@ -29,34 +26,34 @@ class MessageOperator(bpy.types.Operator):
 
     def invoke(self, context, event):
         wm = context.window_manager
-        return wm.invoke_popup(self, width=400, height=200)
+        return wm.invoke_popup(self, width=400)
 
     def draw(self, context):
-        self.layout.label("A message has arrived")
-        row = self.layout.split(0.25)
+        self.layout.label(text="A message has arrived")
+        row = self.layout.split(factor=0.25)
         row.prop(self, "type")
         row.prop(self, "message")
-        row = self.layout.split(0.80)
-        row.label("")
+        row = self.layout.split(factor=0.80)
+        row.label(text="")
         row.operator("error.ok")
 
 
 class B4BRender(bpy.types.Operator):
     bl_idname = Operators.RENDER.value[0]
-    bl_label = "Render all views & rotations"
+    bl_label = "Render all zooms & rotations"
 
     def execute(self, context):
-        if context.scene.group_id != "default":
-            group = context.scene.group_id
+        group = context.scene.group_id if context.scene.group_id != "default" else None
         if Renderer.check_scale():
             bpy.ops.error.message('INVOKE_DEFAULT',
                                   type="Info",
                                   message='model is too large to render')
         else:
-            for z in Zoom:
-                for v in Rotation:
-                    Rig.setup(v, z)
-                    Renderer.generate_output(v, z, group)
+            steps = [(z, v) for z in Zoom for v in Rotation]
+            for i, (z, v) in enumerate(steps):
+                print(f"Step ({i+1}/{len(steps)}): zoom {z.value}, rotation {v.name}")
+                Rig.setup(v, z)
+                Renderer.generate_output(v, z, group)
 
         return {"FINISHED"}
 
