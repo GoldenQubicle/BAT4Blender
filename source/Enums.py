@@ -12,6 +12,7 @@ class Operators(Enum):
     SUN_DELETE = "object.b4b_sun_delete",
     CAM_ADD = "object.b4b_camera_add",
     CAM_DELETE = "object.b4b_camera_delete",
+    GID_RANDOMIZE = "object.b4b_gid_randomize",
 
 
 class Rotation(Enum):
@@ -19,6 +20,9 @@ class Rotation(Enum):
     EAST = 1
     NORTH = 2
     WEST = 3
+
+    def compass_name(self) -> str:
+        return self.name[0]
 
 
 class Zoom(Enum):

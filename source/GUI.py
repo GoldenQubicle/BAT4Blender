@@ -1,6 +1,5 @@
-from .Enums import *
-from .Rig import *
-from .LOD import *
+import bpy
+from .Enums import Operators, Rotation, Zoom
 
 
 class MainPanel(bpy.types.Panel):
@@ -27,7 +26,7 @@ class MainPanel(bpy.types.Panel):
         lod = layout.row(align=True)
         lod.operator(Operators.LOD_FIT.value[0], text="Fit")
         lod.operator(Operators.LOD_DELETE.value[0], text="Delete")
-        lod.operator(Operators.LOD_EXPORT.value[0], text="Export .3DS")
+        # lod.operator(Operators.LOD_EXPORT.value[0], text="Export .OBJ")  # LODs are exported during rendering
 
         layout.label(text="Camera")
         cam = layout.row(align=True)
@@ -40,14 +39,17 @@ class MainPanel(bpy.types.Panel):
         sun.operator(Operators.SUN_DELETE.value[0], text="Delete")
 
         layout.label(text="Render")
-        render = layout.row()
-        render.prop(context.scene, "group_id")
+        render = layout.row(align=True)
+        render.prop(context.scene, "group_id", text="Grp ID")
+        render.operator(Operators.GID_RANDOMIZE.value[0], text='', icon='FILE_REFRESH')
+        hd = layout.row()
+        hd.prop(context.scene, 'b4b_hd', expand=True)
         self.layout.operator(Operators.RENDER.value[0], text="Render all zooms & rotations")
 
 
 class InterfaceVars(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
-    rotation = bpy.props.EnumProperty(
+    rotation: bpy.props.EnumProperty(
         items=[
             (Rotation.NORTH.name, 'N', 'North view', '', Rotation.NORTH.value),
             (Rotation.EAST.name, 'E', 'East view', '', Rotation.EAST.value),
@@ -57,13 +59,13 @@ class InterfaceVars(bpy.types.PropertyGroup):
         default=Rotation.NORTH.name
     )
 
-    zoom = bpy.props.EnumProperty(
-        items=[
+    zoom: bpy.props.EnumProperty(
+        items=(lambda self, context: [
             (Zoom.ONE.name, '1', 'zoom 1', '', Zoom.ONE.value),
             (Zoom.TWO.name, '2', 'zoom 2', '', Zoom.TWO.value),
             (Zoom.THREE.name, '3', 'zoom 3', '', Zoom.THREE.value),
             (Zoom.FOUR.name, '4', 'zoom 4', '', Zoom.FOUR.value),
-            (Zoom.FIVE.name, '5', 'zoom 5', '', Zoom.FIVE.value),
-        ],
-        default=Zoom.FIVE.name
+            (Zoom.FIVE.name, '5ᴴᴰ' if context.scene.b4b_hd == 'HD' else '5', 'zoom 5', '', Zoom.FIVE.value),
+        ]),
+        default=Zoom.FIVE.value,
     )
